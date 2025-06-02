@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>이벤트 리스트</h2>
+    <ul>
+        {% for s in list %}
+            <li>{{s.no}},{{s.title}},{{s.startdate}},{{s.enddate}},{{s.rdate}}</li>
+        {% endfor %}
+
+    </ul>
+
+</body>
+</html>
