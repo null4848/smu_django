@@ -4,25 +4,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>글작성</title>
-  <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <title>Pages - Login</title>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700,900&display=swap&subset=korean" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="stylesheet" href="/static/css/write.css">
   <script>
-    if("{{msg}}"=='1'){
+    if('{{msg}}' == '1'){
       alert('글쓰기가 완료되었습니다.');
       location.href='/board/list/';
     }
-
+    
+    // 작성 완료 버튼 클릭시
     function writeBtn(){
       if ($("#btitle").val().length<2){
-        alter("제목은 2글자 이상 입력하셔야 합니다.");
+        alert('제목은 한글자 이상 입력하여야 등록이 가능합니다.')
         $("#btitle").focus();
         return;
       }
-      writeFrm.submit();
+      writeFrm.submit(); // 완료시 저장
     }
+
+
   </script>
 </head>
 
@@ -65,39 +68,42 @@
     <h1>관리자 글쓰기</h1>
     <hr>
 
-    <form action="/board/write/" name="writeFrm" method="post">
+    <form action="/board/write/" name="writeFrm" method="post" enctype='multipart/form-data'>
       {% csrf_token %}
       <table>
         <colgroup>
           <col width="15%">
           <col width="85%">
         </colgroup>
-        
+
         <tr>
           <th>작성자</th>
           <td>
             <input type="text" name="id" id='id'>
           </td>
         </tr>
-        <tr>
 
+        <tr>
           <th>제목</th>
           <td>
             <input type="text" name="btitle" id='btitle'>
           </td>
         </tr>
+
         <tr>
           <th>내용</th>
           <td>
-            <textarea name="bcontent" cols="50" rows="10" id='bcontent'></textarea>
+            <textarea name="bcontent" id='bcontent' cols="50" rows="10"></textarea>
           </td>
         </tr>
+
         <tr>
           <th>이미지 표시</th>
           <td>
             <input type="file" name="bfile" id="file">
           </td>
         </tr>
+
       </table>
       <hr>
       <div class="button-wrapper">

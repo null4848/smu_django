@@ -4,19 +4,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>글 수정</title>
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700,900&display=swap&subset=korean" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
   <link rel="stylesheet" href="/static/css/style.css">
-  <link rel="stylesheet" href="/static/css/read.css">
+  <link rel="stylesheet" href="/static/css/write.css">
+
   <script>
-    function deleteBtn(){
-      if (confirm('{{board.bno}}번 게시글을 삭제하시겠습니까?')){
-        alert("게시글을 삭제합니다.")
-        location.href = '/board/delete/{{board.bno}}'
+      if('{{msg}}' == '1'){
+        alert('게시글이 수정되었습니다.');
+        location.href = '/board/list/';
       }
-    }
+      // 작성완료 버튼 클릭시
+      function updateBtn(){
+        if($("#btitle").val().length<2){
+          alert("제목은 한글자 이상 입력하셔야 등록이 가능합니다.");
+          $("#btitle").focus();
+          return;
+        }
+        updateFrm.submit(); //완료시 저장시킴.
+      }
   </script>
 </head>
 
@@ -56,47 +63,59 @@
   </nav>
 
   <section>
-    <h1>NOTICE</h1>
+    <h1>게시글 수정</h1>
+    <hr>
 
-    <table>
-      <tr>
-        <th colspan='2'><strong>제목</strong> <span class="separator">|</span> {{board.btitle}}</th>
-      </tr>
-      <tr>
-        <td>
-          <strong>작성일</strong> <span class="separator">|</span>{{board.bdate|date:'Y-m-d'}}
-        </td>
-        <td><strong>조회수</strong> <span class="separator">|</span>{{board.bhit}}</td>
-      </tr>
-      <tr>
-        <td colspan='2'>
-          <strong>작성자</strong> <span class="separator">|</span>{{board.id}}
-      </tr>
-      <tr>
-        <td colspan='2' class="article">
-        {{board.bcontent}}
-      </tr>
-      <tr>
-        <td colspan='2' class="article">
-        <strong>이미지 첨부</strong> <span class="separator">|</span>
-        {% if board.bfile %}
-          <img src='/media/{{board.bfile}}' width='400px'>
-        {% else %}
-          파일없음
-        {% endif %}
-      </tr>
-      <tr>
-        <td colspan='2'><strong>다음글</strong> <span class="separator">|</span> [키즈잼] 2월 프로그램 안내</td>
-      </tr>
-      <tr>
-        <td colspan='2'><strong>이전글</strong> <span class="separator">|</span> [키즈잼] 2020년 1분기 정기 휴관일 안내</td>
-      </tr>
-    </table>
+    <form action="{% url "board:update" board.bno %}" name="updateFrm" method="post" enctype='multipart/form-data'>
+      {% csrf_token %}
+      <table>
+        <colgroup>
+          <col width="15%">
+          <col width="85%">
+        </colgroup>
+        
+        <tr>
+          <th>작성자</th>
+          <td>
+            <input type="text" name="id" id='id' value={{board.id}}>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>제목</th>
+          <td>
+            <input type="text" name="btitle" id='btitle' value={{board.btitle}}>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>내용</th>
+          <td>
+            <textarea name="bcontent" id='bcontent' cols="50" rows="10">{{board.bcontent}}</textarea>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>이미지 등록</th>
+          <td>
+            <input type="file" name="bfile" id="file">
+          </td>
+        </tr>
+        
+        <tr>
+          <th>이미지</th>
+          <td>{{baord.bfile}}</td>
+          <input type='hidden' name='bfile_pre' value='{board.bfile}}'>
+        </tr>
 
-    <a href='{% url "board:list" %}?category={{category}}&search={{search}}'><div class="list">목록</div></a>
-    <div class="list" onclick='deleteBtn()'>삭제</div>
-    <a href='{% url "board:update" board.bno %}'><div class="list">수정</div></a>
-    <a href='{% url "board:reply" board.bno %}'><div class="list">답글달기</div></a>
+      </table>
+      <hr>
+      <div class="button-wrapper">
+        <button type="button" onclick = updateBtn() class="write">수정완료</button>
+        <button type="button" onclick='javascript:history.back();' class="cancel">취소</button>
+      </div>
+    </form>
+
   </section>
 
   <footer>

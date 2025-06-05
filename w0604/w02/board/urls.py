@@ -19,6 +19,10 @@ from . import views
 
 app_name='board'
 urlpatterns = [
-    path('list/', views.list, name='list'),
-    path('write/', views.write, name='write'),
+    path('list/', views.list, name='list'),                 # 게시글 리스트
+    path('view/<int:bno>/', views.view, name='view'),       # 게시글 보기
+    path('write/', views.write, name='write'),              # 글쓰기
+    path('update/<int:bno>', views.update, name='update'),  # 수정
+    path('delete/<int:bno>', views.delete, name='delete'),  # 삭제
+    path('reply/<int:bno>', views.reply, name='reply'),     # 답글 달기
 ]

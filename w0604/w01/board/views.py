@@ -66,7 +66,9 @@ def write(request):
         id = request.POST.get('id') # 섹션에서 가져옴
         btitle = request.POST.get('btitle')
         bcontent = request.POST.get('bcontent')
-        bfile = request.POST.get('bfile')
+        # bfile = request.POST.get('bfile')
+        bfile = request.FILES.get('bfile', '')
+        print('파일부분 : ', request.FILES)
         print('가져온 데이터 : ', id, btitle, bcontent, bfile)
         
         # 1. save() 저장
@@ -90,7 +92,11 @@ def update(request, bno):
     elif request.method == 'POST':
         btitle = request.POST.get('btitle')
         bcontent = request.POST.get('bcontent')
-        bfile = request.POST.get('bfile')
+        bfile_pre = request.POST.get('bfile_pre','')
+        bfile = request.POST.get('bfile','')
+        
+        if not bfile:
+            bfile = bfile_pre
         
         qs = Board.objects.get(bno=bno)
         qs.btitle = btitle
@@ -121,7 +127,7 @@ def reply(request, bno):
         bindent = int(request.POST.get('bindent')) # 부모의 bindent
         btitle = request.POST.get('btitle')
         bcontent = request.POST.get('bcontent')
-        bfile = request.POST.get('bfile')
+        bfile = request.FIELDS.get('bfile,''')
         
         ## 답글 달기 저장
         # 1. gt, lt, gte, lte(작거나 같다) 언더바 두개

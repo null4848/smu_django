@@ -1,13 +1,31 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>답글달기</title>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700,900&display=swap&subset=korean" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
   <link rel="stylesheet" href="/static/css/style.css">
-  <link rel="stylesheet" href="/static/css/read.css">
+  <link rel="stylesheet" href="/static/css/write.css">
+
+  <script>
+      if('{{msg}}' == '1'){
+        alert('답글이 저장 되었습니다.');
+        location.href = '/board/list/';
+      }
+
+      // 답글 완료 버튼 클릭시
+      function replyBtn(){
+        if($("#btitle").val().length<2){
+          alert("제목은 한글자 이상 입력하셔야 등록이 가능합니다.");
+          $("#btitle").focus();
+          return;
+        }
+        replyFrm.submit(); //완료시 저장시킴.
+      }
+  </script>
 </head>
 
 <body>
@@ -22,7 +40,7 @@
   </header>
 
   <nav>
-    <div class="logo"></div>
+    <a href='/'><div class="logo"></div></a>
 
     <div id="search">
       <div class="search"></div><br>
@@ -46,30 +64,58 @@
   </nav>
 
   <section>
-    <h1>NOTICE</h1>
+    <h1>답글 달기</h1>
+    <hr>
 
-    <table>
-      <tr>
-        <th>[키즈잼] 2020년 이용 시간 & 이용 요금 변경 안내</th>
-      </tr>
-      <tr>
-        <td>2019-12-11</td>
-      </tr>
-      <tr>
-        <td class="article">
-          <img src="https://www.midashotel.co.kr/Midas_uploads/2019-12-11%2017-13-142020%EB%85%84_%ED%82%A4%EC%A6%88%EC%9E%BC_%EB%B3%80%EA%B2%BD%EC%82%AC%ED%95%AD_%EC%95%88%EB%82%B4.jpg" alt="" width="80%"></td>
-      </tr>
-      <tr>
-        <td><strong>다음글</strong> <span class="separator">|</span> [키즈잼] 2월 프로그램 안내</td>
-      </tr>
-      <tr>
-        <td><strong>이전글</strong> <span class="separator">|</span> [키즈잼] 2020년 1분기 정기 휴관일 안내</td>
-      </tr>
-    </table>
+    <form action="{% url "board:reply" board.bno %}" name="replyFrm" method="post">
+      {% csrf_token %}
+      {# 답글 달기에 필요한 컬럼 #}
+      <input type="hidden" name='bgroup' value='{{board.bgroup}}'>
+      <input type="hidden" name='bstep' value='{{board.bstep}}'>
+      <input type="hidden" name='bindent' value='{{board.bindent}}'>
+      <table>
+        <colgroup>
+          <col width="15%">
+          <col width="85%">
+        </colgroup>
 
-    <div class="list">목록</div>
-    <div class="list">삭제</div>
-    <div class="list">수정</div>
+        <tr>
+          <th>작성자</th>
+          <td>
+            <input type="text" name="id" id='id' value={{board.id}}>
+          </td>
+        </tr>
+
+        <tr>
+          <th>제목</th>
+          <td>
+            <input type="text" name="btitle" id='btitle' value='[답글] {{board.btitle}}'>
+          </td>
+        </tr>
+
+        <tr>
+          <th>내용</th>
+          <td>
+            <textarea name="bcontent" id='bcontent' cols="50" rows="10">[답글]
+{{board.bcontent}}</textarea>
+          </td>
+        </tr>
+
+        <tr>
+          <th>이미지 등록</th>
+          <td>
+            <input type="file" name="bfile" id="file">
+          </td>
+        </tr>
+
+      </table>
+      <hr>
+      <div class="button-wrapper">
+        <button type="button" onclick = replyBtn() class="write">수정완료</button>
+        <button type="button" onclick='javascript:history.back();' class="cancel">취소</button>
+      </div>
+    </form>
+
   </section>
 
   <footer>

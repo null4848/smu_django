@@ -78,12 +78,13 @@
       </tr>
       <tr>
         <td colspan='2' class="article">
-        <strong>이미지 첨부</strong> <span class="separator">|</span>
-        {% if board.bfile %}
-          <img src='/media/{{board.bfile}}' width='400px'>
-        {% else %}
-          파일없음
-        {% endif %}
+        <strong>이미지첨부</strong><span class="separator">|</span>
+          {% if board.bfile %}
+            <img src='/media/{{board.bfile}}' width='400px'>
+          {% else %}
+             파일없음
+          {% endif %}
+        </td>
       </tr>
       <tr>
         <td colspan='2'><strong>다음글</strong> <span class="separator">|</span> [키즈잼] 2월 프로그램 안내</td>

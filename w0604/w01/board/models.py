@@ -12,7 +12,8 @@ class Board(models.Model):
     bindent = models.IntegerField(default=0)
     # ---
     bhit = models.IntegerField(default=0)
-    bfile = models.CharField(max_length=100, null=True, blank=True)
+    bfile = models.ImageField(max_length=100, null=True, blank=True, upload_to='board')
+    # FileField : 모든 파일 업로드 가능
     bdate = models.DateTimeField(auto_now=True) # 현재날짜시간자동등록
     
     def __str__(self):
