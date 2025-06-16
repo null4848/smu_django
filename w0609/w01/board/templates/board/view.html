@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,20 +8,23 @@
 <meta name="description" content="JARDIN SHOP" />
 <meta name="keywords" content="JARDIN SHOP" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scaleable=no" />
-<link rel="stylesheet" type="text/css" href="../css/reset.css?v=Y" />
-<link rel="stylesheet" type="text/css" href="../css/layout.css?v=Y" />
-<link rel="stylesheet" type="text/css" href="../css/content.css?v=Y" />
-<script type="text/javascript" src="../js/jquery.min.js"></script>
-<script type="text/javascript" src="../js/top_navi.js"></script>
-<script type="text/javascript" src="../js/left_navi.js"></script>
-<script type="text/javascript" src="../js/main.js"></script>
-<script type="text/javascript" src="../js/common.js"></script>
-<script type="text/javascript" src="../js/jquery.easing.1.3.js"></script>
-<script type="text/javascript" src="../js/idangerous.swiper-2.1.min.js"></script>
-<script type="text/javascript" src="../js/jquery.anchor.js"></script>
+<meta name='csrf-token' content='{{csrf_token}}'>
+<link rel="stylesheet" type="text/css" href="/static/css/reset.css?v=Y" />
+<link rel="stylesheet" type="text/css" href="/static/css/layout.css?v=Y" />
+<link rel="stylesheet" type="text/css" href="/static/css/content.css?v=Y" />
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<!-- 날짜 포맷함수 -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script type="text/javascript" src="/static/js/top_navi.js"></script>
+<script type="text/javascript" src="/static/js/left_navi.js"></script>
+<script type="text/javascript" src="/static/js/main.js"></script>
+<script type="text/javascript" src="/static/js/common.js"></script>
+<script type="text/javascript" src="/static/js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="/static/js/idangerous.swiper-2.1.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.anchor.js"></script>
 <!--[if lt IE 9]>
-<script type="text/javascript" src="../js/html5.js"></script>
-<script type="text/javascript" src="../js/respond.min.js"></script>
+<script type="text/javascript" src="/static/js/html5.js"></script>
+<script type="text/javascript" src="/static/js/respond.min.js"></script>
 <![endif]-->
 <script type="text/javascript">
 $(document).ready(function() {
@@ -37,16 +41,16 @@ $(document).ready(function() {
 <!--익스레이어팝업-->
 <div id="ieUser" style="display:none">
 	<div class="iewrap">	
-		<p class="img"><img src="../images/ico/ico_alert.gif" alt="알림" /></p>
+		<p class="img"><img src="/static/images/ico/ico_alert.gif" alt="알림" /></p>
 		<p class="txt">IE버전이 낮아 홈페이지 이용에 불편함이 있으므로 <strong>IE9이상이나 다른 브라우저</strong>를 이용해 주세요. </p>
 		<ul>
-			<li><a href="http://windows.microsoft.com/ko-kr/internet-explorer/download-ie" target="_blank"><img src="../images/ico/ico_ie.gif" alt="IE 최신브라우저 다운" ></a></li>
-			<li><a href="https://www.google.com/intl/ko/chrome/browser" target="_blank"><img src="../images/ico/ico_chrome.gif" alt="IE 최신브라우저 다운" ></a></li>
-			<li><a href="http://www.mozilla.org/ko/firefox/new" target="_blank"><img src="../images/ico/ico_mozila.gif" alt="MOZILA 최신브라우저 다운" ></a></li>
-			<li><a href="http://www.apple.com/safari" target="_blank"><img src="../images/ico/ico_safari.gif" alt="SAFARI 최신브라우저 다운" ></a></li>
-			<li><a href="http://www.opera.com/ko/o/ie-simple" target="_blank"><img src="../images/ico/ico_opera.gif" alt="OPERA 최신브라우저 다운" ></a></li>		
+			<li><a href="http://windows.microsoft.com/ko-kr/internet-explorer/download-ie" target="_blank"><img src="/static/images/ico/ico_ie.gif" alt="IE 최신브라우저 다운" ></a></li>
+			<li><a href="https://www.google.com/intl/ko/chrome/browser" target="_blank"><img src="/static/images/ico/ico_chrome.gif" alt="IE 최신브라우저 다운" ></a></li>
+			<li><a href="http://www.mozilla.org/ko/firefox/new" target="_blank"><img src="/static/images/ico/ico_mozila.gif" alt="MOZILA 최신브라우저 다운" ></a></li>
+			<li><a href="http://www.apple.com/safari" target="_blank"><img src="/static/images/ico/ico_safari.gif" alt="SAFARI 최신브라우저 다운" ></a></li>
+			<li><a href="http://www.opera.com/ko/o/ie-simple" target="_blank"><img src="/static/images/ico/ico_opera.gif" alt="OPERA 최신브라우저 다운" ></a></li>		
 		</ul>
-		<p class="btn" onclick="msiehide();"><img src="../images/ico/ico_close.gif" alt="닫기" /></p>
+		<p class="btn" onclick="msiehide();"><img src="/static/images/ico/ico_close.gif" alt="닫기" /></p>
 	</div>
 </div>
 <!--//익스레이어팝업-->
@@ -89,10 +93,12 @@ $(document).ready(function() {
 	<div id="header">
 		
 		<div id="snbBox">
-			<h1><img src="../images/txt/logo.gif" alt="JARDIN SHOP" /></h1>
+			<a href='/'>
+				<h1><img src="/static/images/txt/logo.gif" alt="JARDIN SHOP" /></h1>
+			</a>
 			<div id="quickmenu">
-				<div id="mnaviOpen"><img src="../images/btn/btn_mnavi.gif" width="33" height="31" alt="메뉴열기" /></div>
-				<div id="mnaviClose"><img src="../images/btn/btn_mnavi_close.gif" width="44" height="43" alt="메뉴닫기" /></div>
+				<div id="mnaviOpen"><img src="/static/images/btn/btn_mnavi.gif" width="33" height="31" alt="메뉴열기" /></div>
+				<div id="mnaviClose"><img src="/static/images/btn/btn_mnavi_close.gif" width="44" height="43" alt="메뉴닫기" /></div>
 				<ul>
 					<li><a href="#">EVENT</a></li>
 					<li><a href="#">CUSTOMER</a></li>
@@ -109,7 +115,7 @@ $(document).ready(function() {
 
 				<div id="search">
 					<input type="text" class="searchType" />
-					<input type="image" src="../images/btn/btn_main_search.gif" width="23" height="20" alt="검색하기" />
+					<input type="image" src="/static/images/btn/btn_main_search.gif" width="23" height="20" alt="검색하기" />
 				</div>
 			</div>
 		</div>
@@ -214,23 +220,22 @@ $(document).ready(function() {
 						<div class="viewHead">
 							<div class="subject">
 								<ul>
-									<li>쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</li>
+									<li>{{board.btitle}}</li>
 								</ul>
 							</div>
 							<div class="day">
-								<p class="txt">작성일<span>14.01.28</span></p>
+								<p class="txt">작성일<span>{{board.bdate|date:'Y-m-d'}}</span></p>
+							</div>
+							<div class="day">
+								<p class="txt">작성자<span>{{board.member.name}}</span></p>
 							</div>
 						</div>
 
 						<div class="viewContents">
-							안녕하세요. 쟈뎅샵입니다.<br/>
-							늘 저희 쟈뎅을 사랑해주시는 많은 고객님들께 감사 인사드립니다.<br/>
-							변함없는 고객님들의 사랑에 보답하고자, 쟈뎅이 온라인 쇼핑몰을 새롭게 리뉴얼 오픈하게 되었습니다.<br/>
-							기존에 tea24로 이용하시던 쟈뎅 제품 전문 쇼핑몰이 쟈뎅샵(jardinshop)이라는 새로운 공간으로<br/>
-							오픈하게 되었습니다.<br/>
-							더욱 새로운 모습과 늘 발전하는 모습으로 찾아뵙도록 하겠습니다.<br/><br/>
-
-							감사합니다.
+							{{board.bcontent}}
+						</div>
+						<div class="viewContents">
+							<img src='/media/{{board.bfile}}' width='50%'>
 						</div>
 					</div>
 
@@ -246,24 +251,193 @@ $(document).ready(function() {
 							<tbody>
 								<tr>
 									<th class="pre">PREV</th>
-									<td><a href="#">상품 재입고는 언제 되나요?</a></td>
+									{% if pre_board %}
+										<td><a href="/board/view/{{pre_board.bno}}/">{{pre_board.btitle}}</a></td>
+									{% else %}
+										<td>이전글이 없습니다.</td>
+									{% endif %}	
 								</tr>
 
 								<tr>
 									<th class="next">NEXT</th>
-									<td>다음 글이 없습니다.</td>
+									{% if next_board %}
+										<td><a href="/board/view/{{next_board.bno}}/">{{next_board.btitle}}</td>
+									{% else %}
+										<td>다음글이 없습니다.</td>
+									{% endif %}	
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					<!-- //이전다음글 -->
+					<script>
+						$(function(){
+							//전역변수 
+							csrfToken = $('meta[name="csrf-token"]').attr('content');
+							// 하단댓글등록
+							$('.replyBtn').click(function(){
+								if('{{request.session.session_id}}'==''){
+									alert('로그인을 하셔야 하단댓글 등록이 가능합니다.');
+									location.href='/member/login/';
+									return;
+								}
+								alert('하단댓글을 등록합니다.');
+								console.log('비밀번호 : ',$('.replynum').val())
+								console.log('게시글번호 : ','{{board.bno}}')
+								console.log('내용 : ',$('.replyType').val())
+								console.log('csrf-token : ',$('meta[name="csrf-token"]').attr('content'));
+								//데이터
+								cpw = $('.replynum').val();
+								ccontent = $('.replyType').val();
+								
+								
+								//ajax데이터전송
+								$.ajax({
+									url:'/comment/cwrite/',
+									type:'post',
+									headers:{'X-CSRFToken':csrfToken},
+									data:{'cpw':cpw,'ccontent':ccontent,'bno':'{{board.bno}}'},
+									success:function(data){
+										console.log(data);
+										cdate = moment(data.comment[c.
+										var hdata = ``;
+										hdata += `<ul id='${data.comment[0].cno}'>`;
+										hdata += `<li class="name">{{request.session.session_name}} <span>[ ${cdate} ]</span></li>`;
+										hdata += `<li class="txt">${data.comment[0].ccontent}</li>`;
+										hdata += `<li class="btn">`;
+										hdata += `<a class="rebtn">수정</a>&nbsp`;
+										hdata += `<a class="rebtn delbtn">삭제</a>`;
+										hdata += `</li>`;
+										hdata += `</ul>`;
 
+
+										$(".replyBox").prepend(hdata);
+
+										// inputbox 글자 삭제
+										$('.c_count').text(Number($('.c_count').text())+1);
+
+										$('.replynum').val('');
+										$('.replyType').val('');
+									},
+									error:function(){
+										alert('실패');
+									}
+								});//ajax선언
+							});//replyBtn
+
+
+							// 하단댓글삭제 .click : 정적명령어구문-처음html페이지 있는 것만 삭제가능
+							//$('.delBtn').click(function(){
+							// .on 동적명령어구문
+							$(document).on("click",".delBtn",function(){
+								let cno = $(this).closest('ul').attr('id');
+								console.log("현재위치 : ",cno);
+								if(confirm(`${cno}번 게시글을 삭제하시겠습니까?`)){
+									// db부분 삭제 -> ajax요청
+									$.ajax({
+										url: '/comment/cdelete/',
+										type:'post',
+										headers:{'X-CSRFToken':csrfToken},
+										data:{'cno':cno},
+										success:function(data){
+											alert('성공');
+											console.log('넘어온데이터 : ',data);
+											$(`#${cno}`).remove();
+											$('.c_count').text(Number($('.c_count').text())-1);
+											alert(`${cno}번 게시글을 삭제했습니다.`);
+										},
+										error:function(){
+											alert('실패');
+										}
+									});//ajax선언
+								}//confirm
+							});//
+
+							$(".replyBtn").click(function(){
+							 	alert("하단 댓글을 추가합니다.")
+							});
+
+							// 하단 댓글 삭제 부분
+							$("raplay")
+
+
+						});//jquery선언
+
+						
+					</script>
+					<!-- 댓글-->
+					<div class="replyWrite">
+						<ul>
+							<li class="in">
+								<p class="txt">총 <span class="orange c_count">{{comment.count}}</span> 개의 댓글이 달려있습니다.</p>
+								<p class="password">비밀번호&nbsp;&nbsp;<input type="password" name='cpw' class="replynum" /></p>
+								<textarea class="replyType" name='ccontent'></textarea>
+							</li>
+							<li class="btn"><a class="replyBtn">등록</a></li>
+						</ul>
+						<p class="ntic">※ 비밀번호를 입력하시면 댓글이 비밀글로 등록 됩니다.</p>
+					</div>
+
+					<div class="replyBox">
+						{% if comment %}
+						{% for c in comment %}
+						<ul id='{{c.cno}}'>
+							<li class="name">{{c.member.name}} <span>[ {{c.cdate|date:'Y-m-d  H:i:s'}} ]</span></li>
+							<li class="txt">{{c.ccontent}}</li>
+							<li class="btn">
+								<a class="rebtn ">수정</a>
+								<a class="rebtn delBtn">삭제</a>
+							</li>
+						</ul>
+						{% endfor %}
+						{% else %}
+						<ul><li>하단댓글이 없습니다.</li></ul>
+						{% endif %}
+
+						<!-- 하단댓글입력부분 -->
+						<!--
+							<ul>
+								<li class="name">jjabcde <span>[2014-03-04&nbsp;&nbsp;15:01:59]</span></li>
+								<li class="txt"><textarea class="replyType"></textarea></li>
+								<li class="btn">
+									<a href="#" class="rebtn">저장</a>
+									<a href="#" class="rebtn">취소</a>
+								</li>
+							</ul>
+						-->
+
+						<!-- 비밀글부분 -->
+						<!--
+							<ul>
+								<li class="name">jjabcde <span>[2014-03-04&nbsp;&nbsp;15:01:59]</span></li>
+								<li class="txt">
+									<a href="password.html" class="passwordBtn"><span class="orange">※ 비밀글입니다.</span></a>
+								</li>
+							</ul>
+						--> 
+					</div>
+					<!-- 댓글 -->
 
 					<!-- Btn Area -->
 					<div class="btnArea btline">
 						<div class="bRight">
 							<ul>
-								<li><a href="#" class="sbtnMini mw">목록</a></li>
+								<li><a href="/board/list/" class="sbtnMini mw">목록</a></li>
+							</ul>
+						</div>
+						<div class="bRight">
+							<ul>
+								<li><a href="#" class="nbtnbig">삭제</a></li>
+							</ul>
+						</div>
+						<div class="bRight">
+							<ul>
+								<li><a href="#" class="nbtnbig">수정</a></li>
+							</ul>
+						</div>
+						<div class="bRight">
+							<ul>
+								<li><a href="#" class="nbtnbig">답글달기</a></li>
 							</ul>
 						</div>
 					</div>
@@ -294,7 +468,7 @@ $(document).ready(function() {
 			</div>
 			
 			<div id="finfo">
-				<div id="flogo"><img src="../images/txt/flogo.gif" alt="JARDIN THE COFFEE CREATOR, SINCE 1984" /></div>
+				<div id="flogo"><img src="/static/images/txt/flogo.gif" alt="JARDIN THE COFFEE CREATOR, SINCE 1984" /></div>
 				<address>
 					<ul>
 						<li>㈜쟈뎅</li>
@@ -307,7 +481,7 @@ $(document).ready(function() {
 					</ul>
 				</address>
 
-				<div id="inicis"><img src="../images/ico/ico_inicis.png" alt="이니시스 결제시스템" /></div>
+				<div id="inicis"><img src="/static/images/ico/ico_inicis.png" alt="이니시스 결제시스템" /></div>
 			</div>
 		</div>
 	</div>
