@@ -74,65 +74,7 @@
 							<col width="*" />
 							</colgroup>
 							<script>
-								//전역변수
-								let emailChk = 0;
-								let cToken = $('meta[name="csrf-token"]').attr('content');
 								
-								function emailBtn(){
-									alert('이메일을 발송합니다.');
-									let email = $('input[name="email"]').val()
-									
-									console.log('email : ',email);
-									console.log('cToken : ',cToken);
-									// url,type,headers,data,success,error
-									$.ajax({
-										url:'/member/emailSend/',
-										type:'post',
-										headers:{'X-CSRFToken':cToken},
-										data:{'email':email},
-										success:function(data){
-											alert('성공');
-											console.log('data : ',data)
-											emailChk = 1;
-										},
-										error:function(){
-											alert('실패');
-										}
-									});//ajax
-								}//emailBtn
-
-								function confirmBtn(){
-									/*
-									if (emailChk != 1){
-										alert('이메일 전송을 하셔야 확인이 가능합니다.');
-										$('input[name="email"]').focus();
-										return;
-									}
-									*/
-									let confirmTxt = $('input[name="confirmTxt"]').val()
-									console.log('confirmTxt : ',confirmTxt);
-									// url,type,headers,data,success,error
-									$.ajax({
-										url:'/member/confirmChk/',
-										type:'post',
-										headers:{'X-CSRFToken':cToken},
-										data:{'confirmTxt':confirmTxt},
-										success:function(data){
-											//alert('성공');
-											console.log('data : ',data);
-											if(data.msg == 'success'){
-												alert('랜덤전송번호와 일치합니다.')
-											}else{
-												alert('랜덤전송번호와 일치하지 않습니다. 다시 입력하세요.')
-											}
-										},
-										error:function(){
-											alert('실패');
-										}
-
-									});//ajax
-
-								}//
 							</script>
 							<tbody>
 								<tr>
@@ -159,7 +101,7 @@
 
 					<!-- Btn Area -->
 					<div class="btnAreaCenter">
-						<a href="/member/step02/" class="gbtn">이메일인증</a></li>
+						<a onclick='nextBtn()' class="gbtn">다음으로</a></li>
 					</div>
 					<!-- //Btn Area -->
 
