@@ -75,7 +75,11 @@
   .fig-1qed43h{
     display: inline-flex;
     width: fit-content;
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem;
   }
+
   .fig-v13w0i {
     display: inline-flex;
     align-items: center;
@@ -128,6 +132,7 @@
   margin: 0; /* H2/H3의 기본 마진 제거 */
   font-size: 25px; /* 필요시 폰트 통일 */
 }
+
 .fig-1yg99r9 {
   height: 25px;
   display: flex;
@@ -373,7 +378,7 @@ element.style {
 .book[_ngcontent-ng-c2831665569] {
     width: calc((100% - 30px) / 4);
     --sui-book-bg-box-width: 100%;
-    --sui-book-bg-box-height: 360px;
+    --sui-book-bg-box-height: 420px;
     --sui-book-cover-width: 160px;
 }
 
@@ -465,13 +470,12 @@ sui-book-title {
     -webkit-line-clamp: 2;
     max-height: 48px;
     line-height: 24px;
-    overflow: hidden;
     display: block;
     overflow-wrap: break-word;
 }
 
 sui-book-author {
-    margin-top: 4px;
+    margin-top: 6px;
     font-size: 15px;
     font-weight: 500;
     line-height: 18px;
@@ -481,6 +485,13 @@ sui-book-author {
     white-space: nowrap;
     display: block;
     overflow-wrap: break-word;
+}
+sui-book-genre, sui-book-publisher {
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 18px;
+    color: #999;
 }
 
 @media (max-width: 1199px) {
@@ -492,16 +503,43 @@ sui-book-author {
         margin-right: 10px;
         text-align: center;
     }
+    sui-book-genre, sui-book-publisher {
+        font-weight: 500;
+        max-width: 200px;
+        margin-left: 10px;
+        margin-right: 10px;
+        text-align: center;
+    }
 }
 
 /* Pricing */
 .pricing[_ngcontent-ng-c2831665569] {
-    margin-top: 2.0625rem;
+    margin-top: 25px;
+    display: flex;
+}
+
+.ng-star-bookmark, .ng-star-reply {
+  display: flex; /* flex로 설정 */
+  align-items: center; /* 세로 가운데 정렬 */
+  min-width: 30px;
+  height: 34px;
+  margin-right: 8px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background-color: #e6e6e6;
+  font-size: 10px;
+}
+
+
+.ng-star-bookmark, .ng-star-reply span{
+  font-size: 14px;
+  font-weight: 500;;
 }
 
 @media (max-width: 1199px) {
     .pricing[_ngcontent-ng-c2831665569] {
         display: flex;
+        align-items: center; /* 세로 가운데 정렬 */
         justify-content: center;
         gap: 0 10px;
         max-width: 236px;
@@ -526,7 +564,7 @@ sui-book-author {
     .price[_ngcontent-ng-c2831665569] span:nth-child(1) {
         min-width: 44px;
         margin-right: 0;
-        font-size: 10px;
+        font-size: 15px;
     }
 
     .price[_ngcontent-ng-c2831665569] span:nth-child(2) {
@@ -534,16 +572,15 @@ sui-book-author {
         font-weight: 500;
         line-height: 15px;
         letter-spacing: -0.02em;
+        align-items: center; /* 세로 가운데 정렬 */
     }
 }
 
 .price[_ngcontent-ng-c2831665569] span:nth-child(1) {
-    min-width: 58px;
-    height: 25px;
-    margin-right: 8px;
-    padding: 0 6px;
-    border-top-right-radius: 8px;
-    background-color: #e6e6e6;
+    line-height: 24px;
+    text-align: center;
+}
+.price[_ngcontent-ng-c2831665569] span:nth-child(1) div {
     font-size: 10px;
     line-height: 24px;
     text-align: center;
@@ -754,15 +791,16 @@ button[disabled] {
   <nav class="fig-12oac04">
     <div class="fig-header-left">
       <a class="fig-1qed43h" href="/" rel="noreferrer">
-        <h2 class="fig-1so0vu4">꼬북꼬북</h2>
-      </a>
-      <a href="/category/list" class="fig-v13w0i">
-        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="fig-zt3wi2">
-          <path d="M4.5 7h15M4.5 12h15M4.5 17h15" stroke="#2D7868" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+        <h1 class="fig-1so0vu4">꼬북꼬북</h1>
+        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg" class="fig-zt3wi2">
+          <path d="M4.5 7h15M4.5 12h15M4.5 17h15" stroke="#2D7868" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <span class="fig-1yg99r9">교환 독서</span>
+        <h4 class="fig-1yg99r9">교환 독서</h4>
       </a>
     </div>
+
     <form role="search" class="fig-1f3tl64 et3830u0">
       <div tabindex="-1" class="fig-5ruc1j">
         <div class="fig-q3rd3s et3830u1">
@@ -777,15 +815,19 @@ button[disabled] {
         </div>
       </div>
     </form>
+
     <div class="fig-14s4iyf">
       <div class="fig-1a78l0v">
         <a href="/account/signup?return_url=https%3A%2F%2Fridibooks.com%2Fwebtoon%2Frecommendation" class="fig-1xmf04s">회원가입</a>
         <a href="/account/login?return_url=https%3A%2F%2Fridibooks.com%2Fwebtoon%2Frecommendation" class="fig-1uubzsj">로그인</a>
       </div>
     </div>
+
     </nav>
   </header> 
+
   <hr class="fig-12nza9p">
+
   <div class="fig-1fij2xg">
     <div class="rigrid-118wmkd">
       <div class="rigrid-79elbk">
@@ -817,7 +859,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kf9632.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kf9632.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -827,20 +869,31 @@ button[disabled] {
                     </div>
                     <sui-book-title _ngcontent-ng-c2831665569="" tabindex="0">제목</sui-book-title>
                     <sui-book-author _ngcontent-ng-c2831665569="" tabindex="0">글쓴이</sui-book-author>
-                    <div _ngcontent-ng-c2831665569="" class="pricing ng-star-inserted"><p _ngcontent-ng-c2831665569="" class="price text-secondary ng-star-inserted">
-                      <span _ngcontent-ng-c2831665569="">출판사</span>
-                      <span _ngcontent-ng-c2831665569="">북마크 수</span>
-                    </p><!----><!----><!---->
-                  </div><!---->
-                </div>
-              </sui-book>
+                    <sui-book-genre _ngcontent-ng-c2831665569="" tabindex="0">장르</sui-book-genre>
+                    <sui-book-publisher _ngcontent-ng-c2831665569="" tabindex="0">출판사</sui-book-publisher>
+                    <div _ngcontent-ng-c2831665569="" class="pricing ng-star-inserted">
+                      <div class="ng-star-bookmark">
+                        <svg width="20" height="20" viewBox="0 0 23 22" fill="none" style="margin-right: 8px"  xmlns="http://www.w3.org/2000/svg">
+                          <path d="M11.4517 21.908L9.79117 20.3321C3.89357 14.7566 0 11.0674 0 6.56643C0 2.87729 2.7713 0 6.29841 0C8.291 0 10.2034 0.967056 11.4517 2.48331C12.6999 0.967056 14.6123 0 16.6049 0C20.132 0 22.9033 2.87729 22.9033 6.56643C22.9033 11.0674 19.0098 14.7566 13.1122 20.3321L11.4517 21.908Z" fill="black"/>
+                        </svg>
+                        <span _ngcontent-ng-c2831665569=""> 17 </span>
+                      </div>
+                      <div class="ng-star-reply">
+                        <svg width="20" height="20" viewBox="0 0 54 51" fill="none" style="margin-right: 8px"ㄴ xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3.00004 3.0002C0.600041 5.4002 0.333374 7.4002 0.333374 20.3335C0.333374 33.2669 0.600041 35.2669 3.00004 37.6669C4.46671 39.1335 6.86671 40.3335 8.33337 40.3335C10.4667 40.3335 11 41.2669 11 45.0002C11 51.9335 13.9334 52.2002 22.3334 45.8002C29.1334 40.6002 30.0667 40.3335 39 40.3335C52.7334 40.3335 53.6667 39.1335 53.6667 20.3335C53.6667 -0.199799 54.4667 0.333534 27 0.333534C7.40004 0.333534 5.40004 0.600201 3.00004 3.0002ZM40.3334 15.6669C40.3334 17.2669 37.9334 17.6669 27 17.6669C16.0667 17.6669 13.6667 17.2669 13.6667 15.6669C13.6667 14.0669 16.0667 13.6669 27 13.6669C37.9334 13.6669 40.3334 14.0669 40.3334 15.6669ZM35 25.0002C35 26.6002 32.8667 27.0002 24.3334 27.0002C15.8 27.0002 13.6667 26.6002 13.6667 25.0002C13.6667 23.4002 15.8 23.0002 24.3334 23.0002C32.8667 23.0002 35 23.4002 35 25.0002Z" fill="black"/>
+                        </svg>
+                        <span _ngcontent-ng-c2831665569=""> 14 </span>
+                      </div>
+                    </div><!---->
+                  </div>
+                </sui-book>
             </div>
             <div _ngcontent-ng-c2831665569="" class="book ng-star-inserted">
               <sui-book _ngcontent-ng-c2831665569="" _nghost-ng-c1655548388="">
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kf4345.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kf4345.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -864,7 +917,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kf3667.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kf3667.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags">
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -887,7 +940,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kf1094.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kf1094.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -909,7 +962,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/ke3796.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/ke3796.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags">
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -933,7 +986,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kd6574.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kd6574.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -956,7 +1009,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kd5088.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kd5088.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -979,7 +1032,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kb6054.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kb6054.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -1003,7 +1056,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/ka6911.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/ka6911.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -1027,7 +1080,7 @@ button[disabled] {
                 <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                   <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/ka4242.jpg"><!----></div>
+                      <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/ka4242.jpg"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                       <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                         <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -1051,7 +1104,7 @@ button[disabled] {
                   <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                     <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                       <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                        <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kg2264.jpg"><!----></div>
+                        <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kg2264.jpg"><!----></div>
                         <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div>
                           <div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                             <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
@@ -1075,7 +1128,7 @@ button[disabled] {
                       <div _ngcontent-ng-c1655548388="" class="sui-book__box">
                         <div _ngcontent-ng-c1655548388="" class="sui-book__cover-box">
                           <div _ngcontent-ng-c1655548388="" class="sui-book__cover-container">
-                            <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="./검색 - 북이오_files/kg2263.jpg"><!----></div>
+                            <img _ngcontent-ng-c2831665569="" sui-book-cover="" class="sui-book-cover" tabindex="0" src="images/kg2263.jpg"><!----></div>
                             <div _ngcontent-ng-c1655548388="" class="sui-book__tags"><!----></div><div _ngcontent-ng-c1655548388="" class="sui-book__tail-tags"><!----><!---->
                               <svg _ngcontent-ng-c1655548388="" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="sui-book__tail-tags-tail">
                                 <path _ngcontent-ng-c1655548388="" fill-rule="evenodd" clip-rule="evenodd" d="M16 16L-6.99382e-07 16L0 0C-3.86258e-07 8.83656 7.16344 16 16 16Z" fill="white"></path>
