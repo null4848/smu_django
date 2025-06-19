@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 {% block content %}
+
 	<!-- container -->
 	<div id="container">
 
@@ -34,29 +36,31 @@
 							<caption>공지사항 보기</caption>
 							<colgroup>
 							<col width="10%" class="tnone" />
-							<col width="*" />
-							<col width="14%" class="tw25" />
+							<col width="10%" />
+							<col width="*" class="tw25" />
+							<col width="15%" class="tw25" />
 							<col width="14%" class="tnone" />
 							</colgroup>
 							<thead>
-								<th scope="col" class="tnone">박스오피스 순위</th>
-								<th scope="col">영화명</th>
-								<th scope="col">순위 증감분</th>
-								<th scope="col" class="tnone">누적매출액</th>
+								<th scope="col" class="tnone">순위</th>
+								<th scope="col">전일대비</th>
+								<th scope="col">영화제목</th>
+								<th scope="col">개봉일</th>
 								<th scope="col" class="tnone">누적관객수</th>
 							</thead>
 							<tbody>
 								{% for d in list %}
 								<tr>
 									<td class="tnone">{{d.rank}}</td>
-									<td class="left">
-										<a href="/pboard3/view/{{d.rank}}/">{{d.movieNm}}</a>
-									</td>
 									<td>{{d.rankInten}}</td>
-									<td class="tnone right">{{d.salesAcc}}</td>
-									<td class="tnone right">{{d.audiAcc}}</td>
+									<td class="left">
+										<a href="/pboard2/view/{{d.movieCd}}/">{{d.movieNm}}</a>
+									</td>
+									<td>{{d.openDt}}</td>
+									<td class="tnone right">{{d.audiAcc|intcomma}}</td>
 								</tr>
 								{% endfor %}
+
 							</tbody>
 						</table>
 					</div>
@@ -88,8 +92,50 @@
 										<option value="" />제목</option>
 									</select>
 								</li>
+								<script>
+									function searchBtn(){
+										alert('검색을 시작합니다.');
+										let searchInput = $('.searchInput').val();
+										console.log('searchInput : ',searchInput);
+										let cToken = $('meta[name="csrf-token"]').attr('content');
+										console.log('cToken : ',cToken);
+										//디장고 전송 - url,type,headers,data,success,error
+										$.ajax({
+											url:'/pboard3/searchAjax/',
+											type:'post',
+											headers:{'X-CSRFToken':cToken},
+											data:{'searchInput':searchInput},
+											success:function(data){
+												alert('성공');
+												console.log(data);
+
+												let hdata = ``;
+
+												for(var i=0;i<data.list.length;i++){
+													hdata += `<tr>
+														<td class="tnone">${data.list[i].rank}</td>
+														<td>${data.list[i].rankInten}</td>
+														<td class="left">
+															<a href="/pboard2/view/${data.list[i].movieCd}/">${data.list[i].movieNm}</a>
+														</td>
+														<td>${data.list[i].openDt}</td>
+														<td class="tnone right">${data.list[i].audiAcc}</td>
+													</tr>`
+												}
+
+												$('tbody').html(hdata);
+											},
+											error:function(){
+												alert('실패');
+											}
+
+										})//ajax
+									
+									}//searchBtn
+
+								</script>
 								<li><input type="text" class="searchInput" /></li>
-								<li class="web"><a href="#"><img src="/static/images/btn/btn_search.gif" alt="검색" /></a></li>
+								<li class="web"><a onclick='searchBtn()'><img src="/static/images/btn/btn_search.gif" alt="검색" /></a></li>
 								<li class="mobile"><a href="#"><img src="/static/images/btn/btn_search_m.gif" alt="검색" /></a></li>
 							</ul>
 						</div>
