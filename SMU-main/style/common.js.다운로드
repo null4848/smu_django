@@ -1,0 +1,203 @@
+/**
+ * 교보문고(공통)
+ */
+
+const IS_MOBILE = kbb.isMobile()
+
+/**
+ * 핫트랙스 이미지 (서버)호스트/베이스URL
+ * @see https://kyobobook.atlassian.net/browse/FT-203
+ */
+kbb.setOption('ui.hottracks.image', {
+  // host: 'https://image.kyobobook.co.kr',
+  // baseURL: '/newimages'
+  host: 'https://contents.kyobobook.co.kr',
+  baseURL: ''
+})
+
+/**
+ * kbb.stats "광고 스크립트" 초기화 데이터
+ **/
+kbb.setOption('stats.initData', [
+  /**
+   * 카카오 픽셀
+   * - TODO: kakaopixel -> kakao
+   * @see https://kakaoad.github.io/kakao-pixel/
+   */
+  {
+    name: ['kakao', 'kakaopixel'],
+    url: 'https://t1.daumcdn.net/kas/static/kp.js',
+    globals: 'kakaoPixel',
+    prototype: {
+      pixel (...args) {
+        return this.globals.kakaoPixel(...args)
+      },
+      pageView (...args) {
+        return this.pixel().pageView(...args)
+      }
+    },
+    posthandle ({ kakaoPixel }) {
+      // kakaoPixel('1830363100807970928').pageView()
+      const API_KEY = '1830363100807970928'
+      // console.log(this.name, globals)
+      // console.log('kakaoPixcel:', kakaoPixel)
+      // kakaoPixel(API_KEY).pageView()
+      this.override('kakaoPixel', kakaoPixel.bind(null, API_KEY))
+      // window.kakaoPixel().pageView()
+      this.pageView()
+    }
+  },
+  /**
+   * 네이버 애널리틱스
+   * @see https://analytics.naver.com/
+   */
+  {
+    name: 'naver',
+    url: 'https://wcs.naver.net/wcslog.js',
+    globals: ['wcs_add', 'wcs', 'wcs_do', '_nasa'],
+    prehandle () {
+      window._nasa = window._nasa || {}
+    },
+    /* eslint-disable-next-line camelcase */
+    posthandle ({ wcs_add, wcs, wcs_do, _nasa }) {
+      /* eslint-disable-next-line camelcase */
+      wcs_add.wa = 's_453f4415ebcb'
+      wcs.inflow('kyobobook.co.kr')
+      wcs_do(_nasa || {})
+    }
+  },
+  /**
+   * Meta(facebook) 픽셀
+   * @see https://ko-kr.facebook.com/business/help/402791146561655?id=1205376682832142
+   */
+  {
+    name: ['facebook', 'meta'],
+    url: 'https://connect.facebook.net/en_US/fbevents.js',
+    globals: 'fbq',
+    prehandle () {
+      if (window.fbq) return
+      const fbq = function () {
+        fbq.callMethod
+          ? fbq.callMethod.apply(fbq, arguments)
+          : fbq.queue.push(arguments)
+      }
+      window.fbq = fbq
+      if (!window._fbq) window._fbq = fbq
+      fbq.push = fbq
+      fbq.loaded = true
+      fbq.version = '2.0'
+      fbq.queue = []
+    },
+    posthandle ({ fbq }) {
+      const API_KEY = '247842611347428'
+      fbq('init', API_KEY)
+      fbq('track', 'PageView')
+    }
+  },
+  // /**
+  //  * Global site tag
+  //  * @see https://developers.google.com/tag-platform/devguides/install-gtagjs?hl=ko
+  //  */
+  // {
+  //   name: ['google', 'gtag'],
+  //   url: 'https://www.googletagmanager.com/gtag/js?id=AW-996822555',
+  //   globals: ['dataLayer', 'gtag'],
+  //   prehandle () {
+  //     window.dataLayer = window.dataLayer || []
+  //     window.gtag = function () { window.dataLayer.push(arguments) }
+  //   },
+  //   posthandle ({ dataLayer, gtag }) {
+  //     // dataLayer = dataLayer || []
+  //     // gtag = function () { dataLayer.push(arguments) }
+  //     gtag('js', new Date())
+  //     gtag('config', 'AW-996822555')
+  //   }
+  // },
+  /**
+   * 모비센스
+   * - TODO: mobion -> mobon
+   * @see https://www.mobon.net/bridge/naver/?utm_source=naver&utm_medium=blog&utm_campaign=contents&utm_content=13
+   */
+  {
+    name: ['mobon', 'mobion'],
+    globals: 'enp',
+    // url: 'https://cdn.megadata.co.kr/dist/prod/enp_tracker_self_hosted.min.js',
+    url: [
+      'https://cdn.megadata.co.kr/dist/prod/v2/mtm.js',
+      '?adverId=' + 'hottracks',
+      '&device=' + (IS_MOBILE ? 'M' : 'W')
+    ].join(''),
+    prehandle () {
+      window.enp = window.enp || function () {
+        (window.enp.q = window.enp.q || []).push(arguments)
+      }
+    },
+    posthandle: ({ enp }) => {
+      enp('create', 'common', 'hottracks', { device: IS_MOBILE ? 'M' : 'W' })
+      enp('send', 'common', 'hottracks')
+    }
+  },
+  /**
+   * 큐봇 광고스크립트
+   * - TODO: qbot -> cubot
+   * @see https://kyobobookcokr-my.sharepoint.com/:x:/g/personal/aiden_kyobobook_com/EVELiBRQ4z9Bt7Eeybz0PswB6Z8FugAeER5Qy5f8XNE4hg?rtime=ELrtPCnf20g
+   */
+  {
+    name: ['cubot', 'qbot'],
+    globals: 'eglc',
+    url: 'https://logger.eigene.io/js/logger.min.js',
+    prototype: {
+      exec (method, key, value) {
+        window.eglc.op(method, key, value)
+      },
+      set (key, value) {
+        this.exec('setVar', key, value)
+      },
+      setCUID (cuid) {
+        this.set('cuid', cuid ?? '4ffe4f3c-7219-4bd2-a7ae-eba4aefc9b19')
+      },
+      setUserID () {
+        this.set('userId', kbb.user?.model?.sub ?? '')
+      },
+      track (name, cuid) {
+        this.setCUID(cuid)
+        this.setUserID()
+        this.exec('track', name)
+      },
+      /**
+       * 장바구니
+       * @param {string} sid 상품아이디
+       */
+      cartItem (sid, cuid) {
+        this.set('itemId', sid)
+        this.track('add_to_cart', cuid)
+      },
+      /**
+       * 찜하기
+       * @param {string} sid 상품아이디
+       */
+      wishItem (sid, cuid) {
+        this.set('itemId', sid)
+        this.track('zzim', cuid)
+      },
+      /**
+       * 검색어 수집
+       * @param {string} keyword 검색어
+       */
+      search (keyword, cuid) {
+        this.set('searchTerm', keyword)
+        this.track('search', cuid)
+      }
+    }
+  }
+])
+
+/** 공통 모듈 호출 */
+;(function () {
+  const domainRegx = /^(onk|www|product|search|event|bc|casting)$/
+  const initLoadDomain = domainRegx.test(window.location.hostname.split('.')[0])
+
+  if (initLoadDomain) {
+    kbb.use('ui-new-ad-banner')
+  }
+}())

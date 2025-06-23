@@ -1,0 +1,73 @@
+/* eslint-disable no-var */
+/* globals KbbJS */
+/**
+ * [ES5] KBB공통 변수 정의
+ * dependent on kbbjs-loader.js
+ */
+
+// TODO: remove debug log
+// console.log('* [loaded] /CDN/js/ui-onk/options.js')
+
+/**
+ * ui_[ink|mok].js 정의된 함수 목록
+ * 해당 스크립트 로드시 호출되는 함수 목록
+ * 배열 순서대로 호출
+ * ui.pub.init.excludes: [배열] 옵션으로 예외처리 가능
+ */
+KbbJS.setOption('ui.pub.init.scripts', {
+  ink: [
+    'setGNB',
+    'setFloating',
+    'setSpsOffsetData',
+    'setFixedElementPosX',
+    'setCustomScroll',
+    'setTableCaption',
+    'setStarRating',
+    'setUIDialog',
+    'setBreadCrumb',
+    'setUISelect',
+    'togglePassword',
+    'setUISpinner',
+    // 'setDatepicker',
+    'setTabs',
+    'setFoldBox',
+    // 'addressDetailAreaOnOff',
+    'setFamilySiteMore',
+    'setSearchInput',
+    'tooltipOnOff',
+    'shsShareToggle',
+    'autoOverflowContents',
+    'setTagToggle',
+    'setTagToggleMulti',
+    'setDomainAutoComplete',
+    'setSwitchOnOff',
+    'optMenuOnOff'
+    // 'createLoadingBox'
+  ],
+  mok: [
+    'setSpsOffsetData',
+    'setHeader',
+    'setFooter',
+    'setGoTop',
+    'setTableCaption',
+    'setUIDialog',
+    'togglePassword',
+    'setTabs',
+    'setSearchInput',
+    'setUISpinner',
+    'setStarRating',
+    // 'addressDetailAreaOnOff',
+    'setIpFocusBlur',
+    'setFoldBox',
+    'tooltipOnOff',
+    'autoOverflowContents',
+    'setTagToggle',
+    'setTagToggleMulti',
+    'setDomainAutoComplete',
+    'dropdownToggle',
+    'setSwitchOnOff',
+    'optMenuOnOff',
+    'headerSearch'
+    // 'createLoadingBox'
+  ]
+})

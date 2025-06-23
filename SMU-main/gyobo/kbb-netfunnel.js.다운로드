@@ -1,0 +1,660 @@
+/* eslint-disable camelcase */
+
+/**
+ * NetFunnel 사용자화
+ * - IIFE, ES7+
+ * - /vendors/netfunnel/custom-netfunnel.js 파일을 사용
+ * @date   2022.10.18
+ * @author Euiyeon Kim <eykim@kyobobook.com>
+ */
+
+/**
+ * [ NetFunnel 제공함수 목록 ]
+ * // 초기화 함수
+ * NetFunnel_init(oFlash,oConfig,oCallbacks);
+ * // 자원사용 요청 함수
+ * NetFunnel_Action(oConfig,(form|url|func|oCallbacks);
+ * // 자원사용 함수
+ * NetFunnel_AliveNotice(oConfig,func);
+ * // 자원사용 완료 함수
+ * NetFunnel_Complete(oConfig,func);
+ */
+(function (global) {
+  /** [ 상수 설정 ] */
+  const DEFAULT_SERVICE_ID = 'service_1'
+
+  /** Action 아이디 */
+  const KbbAction = {
+    OLJE: 'olje',
+    EVENT: 'event',
+    GOLDEN_TIME: 'goldentime',
+    MEMBER: 'member',
+    // TODO: 예시코드 삭제
+    EBOOK: 'ebook',
+    BENEFIT: 'benefit'
+  }
+
+  // Action 아이디 리스트
+  const KbbActionIdList = Object.keys(KbbAction).map(k => KbbAction[k])
+
+  // Action 데이터 리스트
+  const KbbActionDataList = KbbActionIdList.map(name => {
+    // 서비스 아이디가 다른 경우 분기 필요
+    let service_id = DEFAULT_SERVICE_ID
+    let skin
+    // 아이디 파싱을 위한 url.pathname 정규표현식
+    let regexp
+    switch (name) {
+      case KbbAction.OLJE:
+        regexp = [
+          // 상품상세
+          /\/detail\/([^/]+)/,
+          // eBook 상품상세
+          /\/dig\/epd\/ebook\/([^/]+)/
+        ]
+        break
+      case KbbAction.EVENT:
+        regexp = [
+          // event 상세
+          /\/detail\/([^/]+)/
+        ]
+        skin = name
+        break
+      case KbbAction.MEMBER:
+        skin = name
+        break
+      // TODO: 예시코드 삭제
+      case KbbAction.EBOOK:
+        service_id = 'service_2'
+        break
+      case KbbAction.GOLDEN_TIME:
+        skin = name
+        break
+    }
+    return { name, skin, service_id, regexp }
+  })
+
+  /** [ 내부 유틸함수 ] */
+  function _matchObjectType (obj, type) {
+    return Object.prototype.toString.call(obj) === `[object ${type}]`
+  }
+
+  function isPlainObject (obj) {
+    return _matchObjectType(obj, 'Object')
+  }
+
+  function isString (obj) {
+    return _matchObjectType(obj, 'String')
+  }
+
+  function isFunction (obj) {
+    return _matchObjectType(obj, 'Function')
+  }
+
+  /** @type {class} CustomNetFunnel 인스턴스 */
+  let instance = null
+
+  /**
+   * NetFunnel_Action
+   * - TODO: AS-IS기준 NetFunnel 처리 응답까지 로딩화면 추가 필요
+   * <div id='loadingImg'><div class='loadingBox'>
+   * <span><img src='/images/common/icon/ico_loading_v1.gif'></span>
+   * <p>접속자수 증가로<br>처리 시간이 다소 지연되고 있습니다.<br>
+   * <strong>잠시만 기다려주세요.</strong></p>
+   * </div></div>
+   */
+
+  /**
+   * CustomNetFunnel
+   */
+  class CustomNetFunnel {
+    constructor () {
+      this._data = {}
+    }
+
+    get data () {
+      return this._data
+    }
+
+    /**
+     * 사용자 데이터리스트를 반환
+     * @param {string[]} name - 액션이름
+     * @returns {string[]}
+     */
+    getDataList (name) {
+      try {
+        return this.data[name] || []
+      } catch (_err) {
+        return []
+      }
+    }
+
+    /**
+     * 기본값 옵션을 재설정
+     * @param {string|Object} options - 오버라이딩 옵션
+     * @param {string} [options.host] - TS Server Hostname(TS_HOST)
+     * @param {number} [options.port] - TS Server Port(TS_PORT)
+     * @param {string} [options.proto] - TS Server Porotocol(TS_PROTO)
+     * @param {string} [options.query] - TS Query String(TS_QUERY_STR)
+     * @param {string} [options.sid] - TS Service ID(TS_SERVICE_ID)
+     * @param {string} [options.service_id] - TS Service ID(TS_SERVICE_ID)
+     * @param {string} [options.aid] - TS Action ID(TS_ACTION_ID)
+     * @param {string} [options.action_id] - TS Action ID(TS_ACTION_ID)
+     * @param {number} [options.max_ttl] - onContinued 이벤트 발생시 대기 ttl 값의 최대값(TS_MAX_TTL)
+     * @param {number} [options.conn_timeout] - 접속 제한 시간(TS_CONN_TIMEOUT)
+     * @param {number} [options.conn_retry] - 재 접속 횟수(TS_CONN_RETRY)
+     * @param {string} [options.cookie_id] - 쿠키 아이디(TS_COOKIE_ID)
+     * @param {number} [options.cookie_time] - 쿠키 지속시간(TS_COOKIE_TIME)
+     * @param {string} [options.cookie_domain] - 쿠키 도메인(TS_COOKIE_DOMAIN)
+     * @param {number} [options.showcnt_limit] - 화면에 보여줄 대기자수 제한(TS_SHOWCNT_LIMIT)
+     * @param {number} [options.showtime_limit] - 화면에 보여줄 대기시간 제한(TS_SHOWTIME_LIMIT)
+     * @param {number} [options.shownext_limit] - 화면에 보여줄 내 뒤의 대기자수 제한(TS_SHOWNEXT_LIMIT)
+     * @param {number} [options.popup_top] - 대기창의 top위치 지정(TS_POPUP_TOP)
+     * @param {number} [options.popup_left] - 대기창의 left 위치 지정(TS_POPUP_LEFT)
+     * @param {string} [options.skin_id] - 대기창 스킨ID(TS_SKIN_ID)
+     * @param {boolean} [options.use_unfocus] - NetFUNNEL 호출 후 focus값 변경(TS_USE_FOCUS)
+     * @param {number} [options.virt_wait] - 가상 대기시간(TS_VIRT_WAIT)
+     * @param {boolean} [options.use_mobile_ui] - 대기창에 모바일UI 사용여부(TS_USE_MOBILE_UI)
+     * @param {boolean} [options.mp_use] - MProtect기능 사용여부(MP_USE)
+     * @param {Window} [options.popup_target] - 대기창이 출력될 window지정(TS_POPUP_TARGET)
+     * @param {boolean} [options.use_frame_block] - 여러 frame으로 구성된 페이지 에서 다른 Frame 비활성화 기능 사용여부(TS_USE_FRAME_BLOCK)
+     * @param {Object[]} [options.frame_block_list] - 비활성화 할 frame리스트(TS_FRAME_BLOCK_LIST)
+     * @param {boolean} [options.use_pre_wait] - Pre Wait 사용여부(TS_USE_PRE_WAIT)
+     * @param {string} [options.user_data] - User Data(TS_USER_DATA_KEYS)
+     * @param {boolean} [options.nwait_bypass] - 일정기간 대기인원 미변화시 Bypass 변경(TS_NWAIT_BYPASS)
+     * @param {number} [options.max_nwait_count] - 대기인원 확인 주기(TS_MAX_NWAIT_COUNT)
+     * @param {string} [options.block_msg] - Server Block시 알림 문구(TS_BLOCK_MSG)
+     * @param {string} [options.block_url] - Server Block시 이동 되는 URL(TS_BLOCK_URL)
+     * @param {number} [options.ipblock_wait_count] - server IP Block 가상대기창 반복 횟수(TS_IPBLOCK_WAIT_COUNT)
+     * @param {number} [options.ipblock_wait_time] - server IP Block 가상대기 시간(TS_IPBLOCK_WAIT_TIME)
+     * @param {boolean} [options.config_use] - ijs에 설정된 ip, port 강제 사용여부(TS_CONFIG_USE)
+     * @param {string|number|boolean} [value] - 값
+     * @returns {this}
+     * @example
+     * setDefault('service_id', 'service_1')
+     * setDefault('action_id', 'olje')
+     * setDefault({
+     *    service_id: 'service_1',
+     *    action_id: 'olje'
+     * })}
+     */
+    setDefault (options, value) {
+      if (isString(options)) {
+        options = { [options]: value }
+      }
+      if (!isPlainObject(options)) {
+        throw new Error('잘못된 옵션 유형입니다. - expected "String" or "PlainObject"')
+      }
+      options = this.parseOptions(options, true)
+      Object.keys(options).forEach(k => {
+        instance[k] = options[k]
+      })
+      return this
+    }
+
+    /**
+     * [유틸함수] 사용자 옵션 키 이름을 NetFUNNEL 속성이름으로 반환
+     * @param {string} prop - 속성이름
+     * @param {boolean} bDefault - 기본속성 여부
+     * @returns {string}
+     */
+    parseOptionKey (prop, bDefault = false) {
+      switch (prop) {
+        case 'sid':
+        case 'service':
+        case 'service_id' :
+          return bDefault ? 'TS_SERVICE_ID' : 'service_id'
+        case 'aid':
+        case 'action':
+        case 'action_id':
+          return bDefault ? 'TS_ACTION_ID' : 'action_id'
+      }
+      return prop
+    }
+
+    /**
+     * 사용자 옵션객체를 파싱
+     * @param {string} prop - 속성이름
+     * @param {boolean} bDefault - 기본속성 여부
+     * @returns {string}
+     */
+    parseOptions (options, bDefault = false) {
+      const newObj = {}
+      Object.keys(options).forEach(k => {
+        const prop = this.parseOptionKey(k, bDefault)
+        newObj[prop] = options[k]
+      })
+      return newObj
+    }
+
+    /**
+     * 액션 아이디(올제, 이벤트 등) 리스트 설정
+     * @param {string} name - action_id
+     * @param {string[]} list - 판매상품아이디 or 바코드 리스트
+     */
+    initActionList (name, list = []) {
+      const origin = this.getDataList(name)
+      if (origin.length || !Array.isArray(list)) return
+      this.data[name] = list
+      return this
+    }
+
+    /**
+     * NetFunnel_Action; 지원사용 요청함수
+     * - Promise를 반환하는 함수로 재구성
+     * @param {string|Object} config - 설정
+     * @param {any} callback - form|url|func|oCallbacks
+     */
+    action (config, callback) {
+      return new Promise((resolve, reject) => {
+        const hasCallback = callback != null
+        if (!hasCallback) {
+          callback = function (_evt, ret) {
+            // TODO: 성공 결과코드 확인
+            if (ret.code !== 200) {
+              return reject(ret)
+            }
+            return resolve(ret)
+          }
+        }
+        if (isPlainObject(config)) {
+          config = this.parseOptions(config)
+        }
+        const res = window.NetFunnel_Action(config, callback)
+        if (hasCallback) {
+          return resolve(res)
+        }
+      })
+    }
+
+    /**
+     * 사용자 이벤트 액션
+     * @param {string} name - action_id
+     * @param {string} targetId - 대상 아이디(상품 or 이벤트 아이디)
+     * @param {Object} callback - 콜백옵션
+     * @returns {Promise<any>}
+     */
+    customAction (name, targetId, callback) {
+      const data = KbbActionDataList.find(o => o.name === name)
+      let list = []
+      if (data != null) {
+        switch (name) {
+          case KbbAction.OLJE:
+          case KbbAction.EVENT:
+            list = this.getDataList(name)
+            break
+        }
+      }
+      if (targetId == null) {
+        /** @type {RegExp[]} */
+        const regexp = data.regexp
+        if (regexp) {
+          // 판매상품 아이디 및 이벤트 아이디를 URL로부터 파싱
+          const pathname = window.location.pathname
+          for (let i = 0; i < regexp.length; i += 1) {
+            const match = pathname.match(regexp[i])
+            if (match) {
+              targetId = match[1]
+              break
+            }
+          }
+        }
+      }
+
+      if (data == null || targetId == null || !list.includes(targetId)) {
+        const result = isFunction(callback) ? callback() : callback
+        return Promise.resolve(result)
+      }
+      const { service_id } = data
+      const options = {
+        service_id,
+        action_id: name
+      }
+      if (data.skin) {
+        options.skin_id = data.skin
+      }
+      return this.action(options, callback)
+    }
+
+    /**
+     * 사용자 이벤트 액션 (골든타임)
+     * @param {string} name - action_id
+     * @param {Object} callback - 콜백옵션
+     * @returns {Promise<any>}
+     */
+    customAction2 (name, callback) {
+      const data = KbbActionDataList.find(o => o.name === name)
+
+      const { service_id } = data
+      const options = {
+        service_id,
+        action_id: name
+      }
+      if (data.skin) {
+        options.skin_id = data.skin
+      }
+
+      return this.action(options, callback)
+    }
+
+    /**
+     * 사용자 이벤트 액션 (이벤트)
+     * @param {string} name - action_id('event')
+     * @param {Object} callback - 콜백옵션
+     * @returns {Promise<any>}
+     */
+    eventNetfAction (name, callback) {
+      const eventData = KbbActionDataList.find(o => o.name === name)
+      const { service_id } = eventData
+      const options = {
+        service_id,
+        action_id: name
+      }
+      if (eventData.skin) {
+        options.skin_id = eventData.skin
+      }
+
+      return this.action(options, callback)
+    }
+
+    /**
+     * NetFunnel_Complete
+     * @param {string} action_id - 액션아이디
+     * @param {Function} callback - 콜백함수
+     */
+    done (action_id, callback) {
+      let options
+      if (action_id) {
+        options = { action_id }
+      }
+      return window.NetFunnel_Complete(options, callback)
+    }
+  }
+
+  /** ---------- [ EditZoneStart ] ---------- */
+  // Default TS Service id
+  const TS_SERVICE_ID = DEFAULT_SERVICE_ID
+  // Default TS Action id
+  const TS_ACTION_ID = 'olje'
+  // Default TS host
+  const TS_HOST = 'netfunnel.kyobobook.co.kr'
+  // Default TS port
+  const TS_PORT = 443
+  // Default TS protocol [http|https]
+  const TS_PROTO = 'https'
+  // Default request query
+  const TS_QUERY = 'ts.wseq'
+  // Default max ttl (second) 5~30
+  const TS_MAX_TTL = 30
+  // Default connect timeout (second)
+  const TS_CONN_TIMEOUT = 3
+  // Default connect retry count
+  const TS_CONN_RETRY = 2
+  // Default Cookie ID
+  const TS_COOKIE_ID = 'NetFunnel_ID'
+  // Default Cookie Time (minute)
+  const TS_COOKIE_TIME = 10
+  // Default Cookie Domain
+  const TS_COOKIE_DOMAIN = '.kyobobook.co.kr'
+  // NetFunnel Routine Bypass [true|false]
+  const TS_BYPASS = false
+  // Popup Top Position ( "false" is center )
+  const TS_POPUP_TOP = false
+  // Popup Left Position ( "false" is center )
+  const TS_POPUP_LEFT = false
+  // Auto setComplete [true|false]
+  const TS_AUTO_COMPLETE = true
+  // Debug Mode
+  const TS_DEBUG_MODE = false
+  // Show WaitTime Limit (second, 0 is Unlimited)
+  const TS_SHOWTIME_LIMIT = 0
+  // Show WaitUser Limit (0 is Unlimited)
+  const TS_SHOWCNT_LIMIT = 0
+  // Show NextWaitUser Limit (0 is Unlimited)
+  const TS_SHOWNEXT_LIMIT = 0
+  // SHOWCNT,SHOWNEXT Limit를 넘었을때 출력되는 문자열
+  const TS_LIMIT_TEXT = '다수'
+  // true | false
+  const TS_IFRAME_RESIZE = false
+  // object unfocus after netfunnel call
+  const TS_USE_UNFOCUS = true
+  // virtual wait time (millisecond)
+  const TS_VIRT_WAIT = 10000
+  // Mobile UI
+  const TS_USE_MOBILE_UI = true
+  // Popup target window
+  const TS_POPUP_TARGET = window
+  // Block FrameSet Page
+  const TS_USE_FRAME_BLOCK = false
+  // Frame Block Window List
+  const TS_FRAME_BLOCK_LIST = []
+  // Pre waiting popup use
+  const TS_USE_PRE_WAIT = false
+
+  // Input UserData Key & Type(c=cookie,v=variable)
+  // ex) [ {"key":<user_data_key>, "type":<c|v>}, ... ]
+  const TS_USER_DATA_KEYS = []
+
+  // 무조건 Config에 있는 IP 와 PORT로 사용
+  const TS_CONFIG_USE = true
+
+  // 대기 Popup창의 z-index 값.
+  // 대기창이 뒤로 숨지 않도록 적당한 값을 넣어줘야 한다.
+  const TS_POPUP_ZINDEX = 32000
+
+  // Retry(Re-Issue) Where IP Validation Error
+  const TS_IP_ERROR_RETRY = true
+
+  // 일정 기간 동안 대기인원 변함 없을시 Bypass 처리
+  // 사용 유무
+  const TS_NWAIT_BYPASS = true
+  // 대기인원 반복 체크 기준값
+  const TS_MAX_NWAIT_COUNT = 100
+
+  /** [[ Server Block ]] */
+  // Server Block시 팝업에 표시할 문구
+  const TS_BLOCK_MSG = 'Service Block!!'
+  // Server Block시 등록된 url로 이동(미등록시 경고창 후 서비스 진입 불가)
+  const TS_BLOCK_URL = ''
+  // Server IP Block 가상대기창 반복 횟수
+  const TS_IPBLOCK_WAIT_COUNT = 20
+  // Server IP Block 가상대기시간
+  const TS_IPBLOCK_WAIT_TIME = 10000
+
+  /** [[ 대기창 미리보기 ]] */
+  // 대기창 보기
+  const TS_SHOW_WAIT_POPUP = false
+  // event skin 지정
+  // Skin ID (미지정시 default 대기창)
+  const TS_SKIN_ID = ''
+
+  /** [[ Variable for MProtect ]] */
+  // 매크로방지기능 사용유무 (true|false)
+  const MP_USE = false
+  // 사용자의 요청을 체크하기 위한 단위 시간 (ms)
+  const MP_TIMELIMIT = 20000
+  // TIMELIMIT 시간 내에 getTidChkEnter를 요청가능한 최대값
+  const MP_MAXREQLIMIT = MP_TIMELIMIT / 1100
+  // 요청주기의 표준편차 제한값 (ms)
+  const MP_DEVLIMIT = 20
+  // 표준편차 계산을 위한 item숫자
+  const MP_DEVCNTLIMIT = 7
+  // setComplete 없이 getTidChkEnter만 요청한 횟수 제한값(횟수)
+  const MP_REQONLYLIMIT = 10
+  // 계산을 하지 않는 자료개수
+  const MP_MINCOUNT = 5
+
+  // 이벤트 NetFunnel 스킨
+  // const EVENT_SKIN = [
+  //   '<div id="NetFunnel_Skin_Top">',
+  //   '<div id="infoLayerConnect">',
+  //   '<div class="info_layer_connect">',
+  //   '<div class="info_content">',
+  //   '<div class="txt01">현재 서비스 이용고객이 많아<br><em>접속 대기 중</em>입니다.<br>잠시만 기다려주시면 자동으로 이동합니다.</div>',
+  //   '<div class="progressBar"><span style="width:10%;"></span></div>',
+  //   '<div class="txt02">',
+  //   '<div>고객님 앞에 <em><span id="NetFunnel_Loading_Popup_Count" class="' + TS_LIMIT_TEXT + '"></span>명</em>이 대기하고 있습니다.</div>',
+  //   '<div class="timer">예상대기시간 : ',
+  //   '<span id="NetFunnel_Loading_Popup_TimeLeft" class="%M분 %02S초^ ^false"></span>',
+  //   '</div></div>',
+  //   '<div class="txt03">닫기버튼 및 새로고침을 하시면,<br>예상대기시간이 더 길어질 수 있습니다.</div>',
+  //   '</div>',
+  //   '<button id="NetFunnel_Countdown_Stop" type="button" class="btn_close"><span>닫기</span></button>',
+  //   '</div></div></div>'
+  // ].join('')
+  const EVENT_SKIN = [
+    '<div id="NetFunnel_Skin_Top" class="layer_waiting_info">',
+    '<div class="inner">',
+    '<div class="top_area">',
+    '<b>서비스 접속 대기 중입니다</b><br> 이용에 불편을 드려 죄송합니다.',
+    '</div>',
+    '<div class="box_1">',
+    '<dl class="waiting">',
+    '<dt>예상대기시간</dt>',
+    '<dd><span id="NetFunnel_Loading_Popup_TimeLeft" class="%M분 %02S초^ ^false"></span></dd>',
+    '<dt>대기인원</dt>',
+    '<dd><span id="NetFunnel_Loading_Popup_Count" class="' + TS_LIMIT_TEXT + '"></span></dd>',
+    '</dl>',
+    '<div class="progress">',
+    '<span style="width:65%;"></span>',
+    '</div>',
+    '</div>',
+    '<div class="box_2">',
+    '<ul class="list_detail">',
+    '<li>현재 접속 인원이 많아 대기 중이며 잠시만 기다리시면 자동 접속 됩니다.</li>',
+    '<li><b>재 접속하시면 대기시간이 더 길어질 수 있습니다.</b></li>',
+    '</ul>',
+    '</div>',
+    '<div class="bottom_area">',
+    '<button type="button" id="NetFunnel_Countdown_Stop" class="btn_stop"><span style="cursor:pointer">대기중지</span></button>',
+    '</div>',
+    '</div>',
+    '</div>'
+  ].join('')
+
+  // 회원 NetFunnel 스킨
+  const MEMBER_SKIN = [
+    '<div id="NetFunnel_Skin_Top">',
+    '<div style="background-color:#ffffff;border:6px solid #eaeff3;-moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px;">',
+    '<div style="text-align:right;padding-top:5px;padding-right:5px;line-height:25px;"> </div>',
+    '<div style="padding-top:5px;padding-left:5px;padding-right:5px">',
+    '<div style="text-align:center;font-size:12pt;color:#001f6c;height:22px"><b><span>현재 동시 접속량이 많아</span></b></div>',
+    '<div style="text-align:center;font-size:12pt;color:#001f6c;height:22px"><b><span style="color:#013dc1">접속대기 중</span>입니다.</b></div>',
+    '<div style="text-align:right;font-size:9pt;color:#4d4b4c;padding-top:4px;height:17px;"><b>예상시간 : <span id="NetFunnel_Loading_Popup_TimeLeft" class="%M분 %02S초^ ^false"></span></b></div>',
+    '<div style="padding-top:6px;padding-bottom:6px;vertical-align:center;width:228px" id="NetFunnel_Loading_Popup_Progressbar"></div>',
+    '<div style="background-color:#ededed;padding-bottom:8px;overflow:hidden;width:228px">',
+    '<div style="padding-left:5px">',
+    '<div style="text-align:center;font-size:8pt;color:#4d4b4c;padding:3px;padding-top:10px;padding-bottom:10px;height:10px">앞에 <b>',
+    '<span style="color:#2a509b"><span id="NetFunnel_Loading_Popup_Count" class="' + TS_LIMIT_TEXT + '"></span></span></b> 명, 뒤에 ',
+    '<b><span style="color:#2a509b"><span id="NetFunnel_Loading_Popup_NextCnt" class="' + TS_LIMIT_TEXT + '"></span></span></b> 명의 대기자가 있습니다.</div>',
+    '<div style="text-align:center;font-size:8pt;color:#4d4b4c;padding:3px;height:12px">대기가 끝나면 자동 접속되오니</div>',
+    '<div style="text-align:center;font-size:8pt;color:#4d4b4c;padding:3px;height:12px">잠시만 기다려주세요.</div>',
+    '<div style="text-align:center;font-size:8pt;color:#4d4b4c;padding:8px;height:10px;">*재접속(새로고침)하시면</div>',
+    '<div style="text-align:center;font-size:8pt;color:#4d4b4c;padding:3px;height:10px;">대기시간이 더 길어질 수 있습니다.</div>',
+    '<div style="text-align:center;font-size:9pt;color:#2a509b;padding-top:10px;"> <b>[<span id="NetFunnel_Countdown_Stop" style="cursor:pointer">대기중지</span>]</b></div></div></div>',
+    '<div style="height:5px;"></div></div></div></div>'
+  ].join('')
+
+  // 회원 NetFunnel 스킨
+  const GOLDEN_TIME_SKIN = [
+    '<div id="NetFunnel_Skin_Top" class="layer_waiting_info">',
+    '<div class="inner">',
+    '<div class="top_area">',
+    '<b>서비스 접속 대기 중입니다</b><br> 이용에 불편을 드려 죄송합니다.',
+    '</div>',
+    '<div class="box_1">',
+    '<dl class="waiting">',
+    '<dt>예상대기시간</dt>',
+    '<dd><span id="NetFunnel_Loading_Popup_TimeLeft" class="%M분 %02S초^ ^false"></span></dd>',
+    '<dt>대기인원</dt>',
+    '<dd><span id="NetFunnel_Loading_Popup_Count" class="' + TS_LIMIT_TEXT + '"></span></dd>',
+    '</dl>',
+    '<div class="progress">',
+    '<span style="width:65%;"></span>',
+    '</div>',
+    '</div>',
+    '<div class="box_2">',
+    '<ul class="list_detail">',
+    '<li>현재 접속 인원이 많아 대기 중이며 잠시만 기다리시면 자동 접속 됩니다.</li>',
+    '<li><b>재 접속하시면 대기시간이 더 길어질 수 있습니다.</b></li>',
+    '</ul>',
+    '</div>',
+    '<div class="bottom_area">',
+    '<button type="button" class="btn_stop"><span id="NetFunnel_Countdown_Stop" style="cursor:pointer">대기중지</span></button>',
+    '</div>',
+    '</div>',
+    '</div>'
+  ].join('')
+
+  /** ---------- [ export window.NetFunnel ] ---------- */
+  instance = new CustomNetFunnel()
+  // NetFunnel Skin 설정
+  const Skin = {
+    [KbbAction.EVENT]: {
+      normal: { htmlStr: EVENT_SKIN },
+      mobile: { htmlStr: EVENT_SKIN }
+    },
+    [KbbAction.MEMBER]: {
+      normal: { htmlStr: MEMBER_SKIN },
+      mobile: { htmlStr: MEMBER_SKIN }
+    },
+    [KbbAction.GOLDEN_TIME]: {
+      normal: { htmlStr: GOLDEN_TIME_SKIN },
+      mobile: { htmlStr: GOLDEN_TIME_SKIN }
+    }
+  }
+  // NetFunnel 기본 옵션 설정
+  const DefaultOptions = {
+    Skin,
+    TS_HOST,
+    TS_PORT,
+    TS_PROTO,
+    TS_QUERY,
+    TS_SERVICE_ID,
+    TS_ACTION_ID,
+    TS_MAX_TTL,
+    TS_CONN_TIMEOUT,
+    TS_CONN_RETRY,
+    TS_COOKIE_ID,
+    TS_COOKIE_TIME,
+    TS_COOKIE_DOMAIN,
+    TS_BYPASS,
+    TS_POPUP_TOP,
+    TS_POPUP_LEFT,
+    TS_AUTO_COMPLETE,
+    TS_DEBUG_MODE,
+    TS_SHOWTIME_LIMIT,
+    TS_SHOWCNT_LIMIT,
+    TS_SHOWNEXT_LIMIT,
+    TS_LIMIT_TEXT,
+    TS_IFRAME_RESIZE,
+    TS_USE_UNFOCUS,
+    TS_VIRT_WAIT,
+    TS_USE_MOBILE_UI,
+    TS_POPUP_TARGET,
+    TS_USE_FRAME_BLOCK,
+    TS_FRAME_BLOCK_LIST,
+    TS_USE_PRE_WAIT,
+    TS_USER_DATA_KEYS,
+    TS_CONFIG_USE,
+    TS_POPUP_ZINDEX,
+    TS_IP_ERROR_RETRY,
+    TS_NWAIT_BYPASS,
+    TS_MAX_NWAIT_COUNT,
+    TS_BLOCK_MSG,
+    TS_BLOCK_URL,
+    TS_IPBLOCK_WAIT_COUNT,
+    TS_IPBLOCK_WAIT_TIME,
+    TS_SHOW_WAIT_POPUP,
+    TS_SKIN_ID,
+    MP_USE,
+    MP_TIMELIMIT,
+    MP_MAXREQLIMIT,
+    MP_DEVLIMIT,
+    MP_DEVCNTLIMIT,
+    MP_REQONLYLIMIT,
+    MP_MINCOUNT
+  }
+  Object.keys(DefaultOptions).forEach(k => (instance[k] = DefaultOptions[k]))
+  window[global] = instance
+}('NetFunnel'))

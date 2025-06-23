@@ -1,0 +1,88 @@
+/* eslint-disable no-var */
+/* globals KbbJS */
+
+/**
+ * [팝업] 상품 상세 미리보기
+ */
+
+;(function (ResName) {
+  KbbJS.setOption('plugins.ui-product-preview', {
+    dependOn: [ResName.KBB_CM_SCRIPT],
+    elements: {
+      root: '#popProductPreviewMixed',
+      preview: {
+        ink: {
+          bookWrap: '#tabContentLinePrimary2-1',
+          eBookWrap: '#tabContentLinePrimary2-2',
+          wrap: '.preview_area',
+          info: {
+            wrap: '.box_info_wrap',
+            thumbnail: '.thumbnail_area a.link_thumbnail img',
+            name: '.info_product_name .link_text',
+            author: '.info_author_publication .info_author',
+            price: {
+              dc: '.info_price .price_dc',
+              amount: '.info_price .price_amount strong'
+            }
+          },
+          swiper: {
+            nextBtn: '.preview_viewer_wrap .swiper-button-next',
+            prevBtn: '.preview_viewer_wrap .swiper-button-prev'
+          },
+          slider: {
+            item: '.slider_item',
+            minus: '.preview_zoom_box .btn_slider_minus',
+            plus: '.preview_zoom_box .btn_slider_plus',
+            reset: '.preview_zoom_box .btn_reset'
+          },
+          button: {
+            view: '.box_info_wrap .btn_wrap .btn_preview_type',
+            autoPage: '.box_info_wrap .btn_wrap .btn_interval'
+          },
+          footer: {
+            wrap: '.viewer_info_footer',
+            swiper: {
+              current: '.swiper-pagination .swiper-pagination-current',
+              total: '.swiper-pagination .swiper-pagination-total'
+            }
+          }
+        },
+        mok: {
+          bookWrap: '#tabContentLinePrimary2-1',
+          eBookWrap: '#tabContentLinePrimary2-2',
+          wrap: '.preview_area',
+          info: {
+            wrap: '.prod_area',
+            thumbnail: '.prod_thumb_box a.prod_link img',
+            name: '.prod_info .prod_name',
+            author: '.prod_author',
+            price: {
+              value: '.prod_price .val',
+              normal: '.price_normal .val'
+            }
+          },
+          footer: {
+            wrap: '.preview_footer',
+            menuButton: '.btn_preview_menu'
+          }
+        },
+        onk: {
+          tab: {
+            root: '.tab_wrap'
+          },
+          button: {
+            wish: '.btn_wish',
+            cart: '.btn_light_gray.btn_cart.btn_sm'
+          }
+        }
+      },
+      snsShare: [
+        { name: 'KAS', selector: 'kakao' },
+        { name: 'NAB', selector: 'band' },
+        { name: 'FAB', selector: 'facebook' },
+        { name: 'TWI', selector: 'twitter' },
+        { name: 'URL', selector: 'url_copy' }
+      ]
+    }
+  })
+})(KbbJS.getOption('resource.names'))

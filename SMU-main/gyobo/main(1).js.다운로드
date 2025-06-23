@@ -1,0 +1,164 @@
+/* eslint-disable no-var */
+/* globals KbbJS */
+;(function () {
+  var bMobile = KbbJS.isMobile()
+  const optType = KbbJS.getOption('plugins.ui-product.type')
+
+  const ProductOptions = {}
+
+  // ---------- PRODUCT BOOKCARD ----------
+  ProductOptions.bookCard = {
+    wrap: '.product_detail_area.book_card',
+    list: '.book_card_contents.book_card_swiper .swiper-wrapper'
+  }
+
+  // ---------- PRODUCT BOOKRELATED ----------
+  ProductOptions.bookRelated = {
+    wrap: '.product_detail_area.product_related',
+    list: '.prod_list.swiper-wrapper'
+  }
+
+  // ---------- PRODUCT ANOTHERLANGUAGE ----------
+  ProductOptions.anotherLanguage = {
+    wrap: '.product_detail_area.product_related',
+    list: '.prod_list.swiper-wrapper'
+  }
+
+  // ---------- PRODUCT EVENT ----------
+  ProductOptions.event = {
+    wrap: '#scrollSpyProdEvent',
+    title: '.title_heading',
+    ink: {
+      area: '.product_detail_area.product_event',
+      wrap: {
+        main: '.event_list',
+        sub: '.auto_overflow_wrap .event_list'
+      }
+    }
+  }
+
+  // ---------- PRODUCT KEYWORDPICK ----------
+  ProductOptions.keywordPick = {
+    wrap: '.product_detail_area.product_keyword_pick',
+    tab: '.tabs',
+    list: bMobile ? '.prod_list.swiper-wrapper' : '.keyword_pick_list',
+    btnMore: '.btn_more_plus'
+  }
+
+  // ---------- PRODUCT PACKAGE ----------
+  ProductOptions.package = {
+    wrap: '.product_detail_area.product_package',
+    btnWrap: bMobile ? '.more_btn_wrap' : '.btn_wrap'
+  }
+
+  // ---------- PRODUCT SERIES ----------
+  ProductOptions.series = {
+    wrap: '.product_detail_area.product_series',
+    title: '.title_heading',
+    imgList: '.prod_list.swiper-wrapper',
+    textList: '.prod_text_list.swiper-wrapper'
+  }
+
+  // ---------- PRODUCT FOOTER ----------
+  ProductOptions.footer = {
+    wrap: '.prod_detail_footer',
+    optionWrap: bMobile ? '#popBuyOption' : '.prod_option_info_wrap',
+    noDataWrap: '.no_data',
+    inputSpinner: '.form_spinner',
+    bOption: bMobile ? '.option_list_wrap' : '.btn_option_more',
+    priceText: `${bMobile ? '#popBuyOption .prod_option_bottom' : '.prod_purchase_info_wrap .footer_contents_inner'} .prod_info_price .val`,
+    selectedWrap: '.option_selected_wrap',
+    totalWrap: bMobile ? '.prod_option_bottom' : '.option_total_price',
+    selectedList: '.option_selected_list',
+    list: '.fold_select_list',
+    btn: {
+      wish: '.prod_detail_footer .btn_wish.size_lg',
+      wishText: '.prod_detail_info_area .util_btn_wrap .btn_wish_text',
+      spinner: `${bMobile ? '#popBuyOption .prod_count_wrap' : '.prod_purchase_info_wrap .right_area'} .form_spinner_box`,
+      reStock: '#reStock',
+      release: '#release',
+      pop: '[data-target="#popSeatingChart"]',
+      basket: '#basket',
+      buy: '#buy',
+      reserve: '#reserve',
+      present: '#present',
+      direct: '#direct',
+      bkm : '#bkm'
+    },
+    seat: {
+      selectedList: '.col.selected_result .option_selected_list',
+      popWrap: '#popSeatingChart'
+    }
+  }
+
+  // ---------- PRODUCT RECOMMEND ----------
+  ProductOptions.recommend = {
+    wrap: bMobile ? '#popRecommendList .swiper-wrapper' : '.prod_detail_recommend'
+  }
+
+  // ---------- PRODUCT COMBINATION ----------
+  ProductOptions.combination = {
+    wrap: '#scrollSpyProdInfo',
+    popWrap: '#popCombineProdDetail',
+    optList: '.fold_select_list',
+    btnWrap: bMobile ? '.dialog_contents .prod_detail_footer' : '.dialog_contents .combine_prod_header .btn_wrap',
+    mokOptList: '.combine_prod_list'
+  }
+
+  // ---------- PRODUCT ORIGINALTRANSLATE ----------
+  ProductOptions.originalTranslate = {
+    wrap: '.product_detail_area.product_preview',
+    content: '.auto_overflow_inner',
+    info: '.prod_info_box',
+    name: '.prod_name',
+    author: '.prod_author',
+    percent: '.percent',
+    price: '.val'
+  }
+
+  // ---------- PRODUCT TRAILER ----------
+  ProductOptions.trailer = {
+    wrap: '.product_detail_area.product_trailer',
+    title: '.title_heading'
+  }
+
+  // ---------- PRODUCT CLAIMINFO ----------
+  ProductOptions.claimInfo = {
+    wrap: '.product_detail_area.claim_info_wrap',
+    list: '.claim_info_list',
+    orderBtn: `${bMobile ? '.btn_wrap' : (optType === 'TRAVEL' ? '.btn_wrap' : '.right_area')} .btn_sm.btn_line_gray`,
+    qnaBtn: `${bMobile ? '.btn_wrap' : (optType === 'TRAVEL' ? '.btn_wrap' : '.right_area')} .btn_sm.btn_primary`
+  }
+
+  // ---------- PRODUCT OPENMARKET ----------
+  ProductOptions.openMarket = {
+    wrap: '#scrollSpyProdInquiry',
+    serviceBtn: `.title_wrap.${bMobile ? 'title_size_lg.column' : 'title_size_md.has_btn'} #serviceQna`,
+    sellerBtn: `.title_wrap.${bMobile ? 'title_size_lg.column' : 'title_size_md.has_btn'} #sellerQna`,
+    list: '.fold_box_list',
+    pop: {
+      popRegisterWrap: '#popSellerInquiryRegister',
+      registerBtn: '.dialog_footer .btn_md.btn_primary',
+      isSecret: '.bottom_chk_box #secretForm',
+      category: bMobile ? '#exInputTitle01' : '#inquiry0101',
+      title: bMobile ? '#exInputTitle03' : '#inquiry0301',
+      content: bMobile ? '#exInputTitle04' : '#inquiry0401'
+    }
+  }
+
+  // ---------- PRODUCT PROCEEDING ----------
+  ProductOptions.proceeding = {
+    wrap: '.product_detail_area.product_proceeding',
+    list: '.prod_list.swiper-wrapper'
+  }
+
+  // ---------- PRODUCT CROSSRECOMMEND ----------
+  ProductOptions.crossRecommend = {
+    wrap: '.product_detail_area.product_related_02',
+    list: '.prod_list.swiper-wrapper'
+  }
+
+  Object.keys(ProductOptions).forEach(k => {
+    KbbJS.setOption('plugins.ui-product-' + k, ProductOptions[k])
+  })
+}())

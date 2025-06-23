@@ -1,0 +1,38 @@
+/* eslint-disable no-var */
+/* globals KbbJS */
+
+/**
+ * [팝업] 윙배너
+ */
+
+;(function (ResName) {
+  KbbJS.use({
+    name: 'ui-wing-banner',
+    options: {
+      dependOn: [ResName.KBB_CM_SCRIPT],
+      api: {
+        url: 'http://api-aws.dev3.kyobobook.co.kr/onk/api/v1/banner/wing',
+        method: 'get'
+      },
+      elements: {
+        root: '.fly_menu_wrapper',
+        linkWrap: '.fly_link_box',
+        adWrap: '.fly_menu_banner',
+        guideWrap: '.btn_shopping_guide',
+        event: {
+          wrap: '.fly_event_area',
+          button: '.fly_menu_link',
+          banner: '.fly_event_banner',
+          swiper: {
+            wrap: '.swiper-container',
+            next: '.swiper_control_box .swiper-button-next',
+            prev: '.swiper_control_box .swiper-button-prev',
+            pagenation: '.swiper_control_box .swiper-pagination'
+          },
+          itemWrap: '.fly_event_banner .swiper-wrapper',
+          item: '.fly_event_banner .swiper-slide'
+        }
+      }
+    }
+  })
+})(KbbJS.getOption('resource.names'))

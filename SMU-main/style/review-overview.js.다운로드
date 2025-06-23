@@ -1,0 +1,19 @@
+/* eslint-disable no-var */
+/* globals KbbJS */
+
+/**
+ * [팝업] 리뷰 overview
+ */
+
+;(function (ResName) {
+  KbbJS.use({
+    name: 'ui-review-overview',
+    options: {
+      // ui_product_ink.js = local-common-js
+      dependOn: [ResName.KBB_CM_LOCAL_JS],
+      elements: {
+
+      }
+    }
+  })
+})(KbbJS.getOption('resource.names'))

@@ -1,0 +1,27 @@
+/*
+ * name : SCR-BIZ05-01-P029.js
+ * desc : 결합상품 상세 레이어 팝업 전용 스크립트
+ * writer : glim
+ * create : 2021/12/10
+ * update :
+ * -
+ */
+
+$(function(){
+	$('#popCombineProdDetail').on('dialogopen', function(){
+		var popContainer = $(this);
+		$('.portrait_img_box', popContainer).each(function () {
+			var imgTg = $(this);
+			KyoboBookPub.ink.checkImagePortrait(imgTg);
+		});
+
+		$('.detail_view_control .btn_view_control', popContainer).on('click', function(){
+			$('.detail_view_control .btn_view_control', popContainer).removeClass('active');
+			$(this).addClass('active');
+			var activeContents = $('.'+$(this).data('combine-contents'));
+
+			activeContents.siblings().removeClass('active');
+			activeContents.addClass('active');
+		});
+	});
+});

@@ -1,0 +1,96 @@
+/* eslint-disable no-var */
+/* globals bodymovin */
+
+;(function () {
+  var LOADING_DATA_URL = '/cdn/data/loading_onk.json'
+  var KbbLoadingStatic = function () {
+    this._anim = null
+    this.$html = null
+    this.$body = null
+    this.$root = null
+    this.initialized = false
+    var self = this
+
+    this.domReady()
+    // $(function () { self.init() })
+    window.fetch(LOADING_DATA_URL)
+      .then(function (res) { return res.json() })
+      .then(function (data) {
+        if (_.get(data, 'resultCode') === '500') {
+          throw new Error('[lottie] bodymovin json-data load failure - ' + LOADING_DATA_URL)
+        }
+        self.domReady().then(function () { self.init(data) })
+      })
+      .catch(function (err) {
+        self.domReady().then(function () { self.stop() })
+        throw new Error(err)
+      })
+  }
+
+  ;(function () {
+    this.domReady = function () {
+      var self = this
+      if (this.$html != null) {
+        return Promise.resolve()
+      }
+      return new Promise(function (resolve) {
+        $(function () {
+          self.$root = $('#KbbLoading')
+          self.$html = $('HTML')
+          self.$body = $('BODY')
+          resolve()
+        })
+      })
+    }
+    this.init = function (data) {
+      if (this.initialized) return
+      var target = this.$root.find('.loading_target')[0]
+      var ani = bodymovin.loadAnimation({
+        container: target,
+        renderer: 'svg',
+        animationData: data,
+        // path: '/cdn/data/lottie-loading.json',
+        loop: true,
+        autoplay: false
+        // rendererSettings: {
+        //   progressiveLoad: false
+        // }
+      })
+      this._anim = ani
+      // console.log(this._anim)
+      this.initialized = true
+      if (this.$html.hasClass('loading')) {
+        this.start()
+      }
+    }
+    this.start = function (bDimming, bContinue) {
+      if (!this.initialized) return
+      if (bContinue == null) bContinue = true
+      var ani = this._anim
+      if (ani == null || this.isActive()) return
+      var nFrame = !bContinue ? 1 : ani.currentFrame
+      var clsname = 'show' + (!bDimming ? '' : ' dimmed')
+      this.$root.addClass(clsname)
+      this._anim.goToAndPlay(nFrame)
+      this.$html.addClass('loading')
+    }
+    // TODO: 리팩토링
+    this.stop = function () {
+      var ani = this._anim
+      if (ani != null && !this.isActive()) return
+      try {
+        this.$html.removeClass('loading')
+        this.$root.removeClass('show dimmed')
+        if (ani == null) return
+        this._anim.stop()
+      } catch (err) {}
+    }
+    this.isActive = function () {
+      var ani = this._anim
+      if (!this.initialized) return false
+      return !ani.isPaused
+    }
+  }).call(KbbLoadingStatic.prototype)
+
+  window.KbbLoading = new KbbLoadingStatic()
+}())

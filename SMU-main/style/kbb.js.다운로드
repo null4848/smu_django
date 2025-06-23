@@ -1,0 +1,7 @@
+// IIFE
+;(function (KBBJS) {
+  const kbbjs = _.get(window, KBBJS)
+  if (kbbjs != null) return
+  const legacy = _.get(window, 'KbbJS', {})
+  _.set(window, KBBJS, legacy)
+})('kbb')

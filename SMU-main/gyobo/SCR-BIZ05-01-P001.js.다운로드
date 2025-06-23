@@ -1,0 +1,76 @@
+/*
+ * name : SCR-BIZ05-01-P001.js
+ * desc : 상품 상세(내서) 전용 실행 자바스크립트
+ * writer : glim
+ * create : 2021/11/30
+ * update :
+ * -
+ */
+
+$(function () {
+	$('.prod_thumb_item .size_compare_box').each(function () {
+		setSizeCompareImgRatio(this, {
+			width: parseInt($('.thumb_size', this).text().split('x')[0]),
+			height: parseInt($('.thumb_size', this).text().split('x')[1]),
+		});
+	});
+});
+
+function setSizeCompareImgRatio(target, prodThumbSizes) {
+	var boxMinWidth,
+		boxMaxHeight,
+		baseWidth,
+		paperSizes,
+		paperRatios,
+		prodThumbRatios,
+		defBoxSizes,
+		thumbBoxSizes;
+
+	boxMinWidth = 58;	// 박스의 최소 넓이값
+	boxMaxHeight = 461;	// 박스의 최대 높이값
+	baseWidth = $('.size_compare_inner', target).width() - 20;	// 전체 박스 사이즈 - 각 박스 사이 여백 20px
+	paperSizes = {
+		width: 210,
+		height: 297
+	};	// A4용지 사이즈
+
+	// A4 용지의 비율
+	paperRatios = paperSizes.width / (paperSizes.width + prodThumbSizes.width);
+	// 상품 이미지의 비율
+	prodThumbRatios = prodThumbSizes.width / (paperSizes.width + prodThumbSizes.width);
+	defBoxSizes = {
+		width: Math.floor(baseWidth * paperRatios),
+		height: Math.floor(paperSizes.height * (baseWidth * paperRatios) / paperSizes.width),
+	};
+
+	thumbBoxSizes = {
+		width: Math.floor(baseWidth * prodThumbRatios),
+		height: Math.floor(Math.min(boxMaxHeight, prodThumbSizes.height * (baseWidth * prodThumbRatios) / prodThumbSizes.width)),
+	}
+
+	// 기준 A4 사이즈가 최소 넓이보다 작아지려고 하는 경우
+	if (boxMinWidth >= defBoxSizes.width) {
+		// console.log('A4 최소 사이즈');
+		// A4 넓이는 최소 넓이 값으로 지정, 높이는 비율대로 조정
+		defBoxSizes.width = boxMinWidth;
+		defBoxSizes.height = Math.floor(paperSizes.height * boxMinWidth / paperSizes.width);
+		$('.compare_def_box', target).addClass('minimize');
+
+		// 상품 이미지 넓이는 전체 넓이에서 최소 넓이를 제외한 값으로 지정, 높이는 지정된 넓이 기준 비율대로 조정하되 최대 높이값을 넘지 않도록 함
+		thumbBoxSizes.width = baseWidth - boxMinWidth;
+		thumbBoxSizes.height = Math.floor(Math.min(boxMaxHeight, Math.max(thumbBoxSizes.height, thumbBoxSizes.width * (prodThumbSizes.width / prodThumbSizes.height))));
+	} else if (boxMinWidth >= thumbBoxSizes.width) {
+		// console.log('상품 이미지 최소 사이즈');
+		// 상품 이미지 사이즈가 최소 넓이보다 작아지려고 하는 경우
+		// 상품 이미지 넓이는 최소 넓이 값으로 지정, 높이는 지정된 넓이 기준 비율대로 조정하되 최소 넓이값, 최대 높이값을 넘지 않도록 함
+		thumbBoxSizes.width = boxMinWidth;
+		thumbBoxSizes.height = Math.floor(Math.min(boxMaxHeight, Math.max(boxMinWidth, thumbBoxSizes.height * boxMinWidth / thumbBoxSizes.width)));
+
+		// A4 넓이는 전체 넓이에서 최소 넓이를 제외한 값으로 지정, 높이는 지정된 넓이 기준 비율대로 조정하되 최대 높이값을 넘지 않도록 함
+		defBoxSizes.width = baseWidth - boxMinWidth;
+		defBoxSizes.height = Math.floor(Math.min(boxMaxHeight, Math.max(defBoxSizes.height, defBoxSizes.width * (paperSizes.width / paperSizes.height))));
+	}
+
+	$('.compare_def_box', target).css(defBoxSizes);
+	$('.compare_thumb_box', target).css(thumbBoxSizes);
+}

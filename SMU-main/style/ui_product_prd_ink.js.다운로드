@@ -1,0 +1,533 @@
+/*
+ * name : ui_product_ink.js
+ * desc : 상품 공통 자바스크립트
+ * writer : glim
+ * create : 2021/11/30
+ * update :
+ * -
+ */
+
+$(window).on('load', function () {
+	prodInfoThumbSwiper();
+});
+
+$(function () {
+	setProdDetailAnchor();
+	reviewTabAnchor();
+	placeInfoAnchor();
+	colProdInfoAnchor();
+
+	setProdTitleMoreBtn();
+	prodSwiperCommon();
+
+  observeFixedTab(); // 추가 230911 상품상세 뷰포트 개선
+
+	if ($('.product_detail_area.book_config').length > 0) {
+		var overflowContents,
+			contentsMaxHeight;
+		overflowContents = $('.product_detail_area.book_config .auto_overflow_contents');
+		contentsMaxHeight = 0;
+
+		contentsMaxHeight += parseInt(overflowContents.find('.tbl_col_wrap thead').outerHeight());
+
+		overflowContents.find('.tbl_col_wrap tbody tr').each(function (index) {
+			if (index < 4) {
+				contentsMaxHeight += parseInt($(this).outerHeight());
+			}
+		});
+
+		overflowContents.css('maxHeight', contentsMaxHeight + 2);
+
+		KyoboBookPub.ink.autoOverflowContents('.book_config .auto_overflow_wrap');
+	}
+
+	// 뷰 토글 버튼 이벤트 설정
+	KyoboBookPub.ink.setSwitchListBtn(function (tg) {
+		if (tg.hasClass('view_type_img')) {
+			if ($('.prod_swiper_wrap', tg).get(0).swiper !== undefined) $('.prod_swiper_wrap', tg).get(0).swiper.update();
+		} else {
+			if ($('.prod_swiper_text', tg).get(0).swiper !== undefined) $('.prod_swiper_text', tg).get(0).swiper.update();
+		}
+	});
+
+	// 옵션 선택시 폴딩 닫힘
+	$('.fold_select_item').add('.fold_select_prd').on('click', function () {
+		var foldBox = $(this).closest('.fold_box');
+		KyoboBookPub.ink.foldOnOff().foldClose(foldBox);
+	});
+
+	KyoboBookPub.ink.page.setEventSwiper();
+	KyoboBookPub.ink.page.setReviewThumbnailSwiper();
+	KyoboBookPub.ink.page.setKillingPartSwiper();
+	KyoboBookPub.ink.page.setCommentList();
+
+	// 북카드
+	if ($('.book_card_swiper .swiper-slide').length > 2) {
+		var bookCardSwiper = new CustomSwiper('.book_card_swiper .swiper-container', {
+			slidesPerView: 'auto',
+			slidesPerGroup: 1,
+			observer: true,
+			observeParents: true,
+			loop: true,
+			speed: 500,
+			navigation: {
+				nextEl: '.book_card_swiper .swiper-button-next',
+				prevEl: '.book_card_swiper .swiper-button-prev',
+			},
+		});
+	} else {
+		$('.book_card_swiper .swiper-button-next, .book_card_swiper .swiper-button-prev').remove();
+	}
+
+	// 함께 구매한 책
+	var withThisSwiper = new CustomSwiper('.slide_list_with_this', {
+		slidesPerView: 'auto',
+		speed: 500,
+		freeMode: true,
+		scrollbar: {
+			el: $('.slide_list_with_this').find('.swiper-scrollbar')[0],
+		},
+	});
+
+	// 이 책의 시리즈
+	var writerBooksSwiper = new CustomSwiper('.slide_writer_books', {
+		slidesPerView: 'auto',
+		speed: 500,
+		freeMode: true,
+		scrollbar: {
+			el: $('.slide_writer_books').find('.swiper-scrollbar')[0],
+		},
+	});
+
+
+	// 강연 / 동영상 등 인물 영역
+	if ($('.prod_person_swiper_wrap .swiper-slide').length > 1) {
+		var personSwiper = new CustomSwiper('.prod_person_swiper_wrap > .swiper-container', {
+			slidesPerView: 1,
+			spaceBetween: 20,
+			speed: 500,
+			followFinger: false,
+			pagination: {
+				el: $('.prod_person_swiper_wrap').find('> .swiper_control_box .swiper-pagination')[0],
+			},
+		});
+	} else {
+		$('.prod_person_swiper_wrap > .swiper_control_box').css('display', 'none');
+	}
+
+	// 인물 영역 내 다른 콘텐츠
+	$('.person_contents_swiper_wrap').each(function () {
+		if ($('.person_contents_swiper .swiper-slide', this).length > 1) {
+			var personContentsSwiper = new CustomSwiper($('.person_contents_swiper', this), {
+				slidesPerView: 1,
+				spaceBetween: 20,
+				speed: 500,
+				allowTouchMove: false,
+				navigation: {
+					nextEl: $('.title_wrap .swiper_control_box .swiper-button-next', this)[0],
+					prevEl: $('.title_wrap .swiper_control_box .swiper-button-prev', this)[0],
+				},
+			});
+		} else {
+			$('.title_wrap .swiper_control_box', this).css('display', 'none');
+		}
+	});
+
+	// 함께 하는 상품
+	if ($('.prod_related_swiper .swiper-slide').length > 1) {
+		var personContentsSwiper = new CustomSwiper('.prod_related_swiper', {
+			slidesPerView: 1,
+			spaceBetween: 20,
+			speed: 500,
+			navigation: {
+				nextEl: $('.control_prod_related').find('.swiper_control_box .swiper-button-next')[0],
+				prevEl: $('.control_prod_related').find('.swiper_control_box .swiper-button-prev')[0],
+			},
+			pagination: {
+				el: $('.control_prod_related').find('.swiper_control_box .swiper-pagination')[0],
+				type: "fraction",
+				formatFractionCurrent: function (number) {
+					return KyoboBookPub.ink.setPrependZero(number, 2);
+				},
+				formatFractionTotal: function (number) {
+					return KyoboBookPub.ink.setPrependZero(number, 2);
+				},
+			},
+		});
+	} else {
+		$('.control_prod_related').css('display', 'none');
+	}
+
+	// 결합상품 팝업
+	$('.combine_prod_popup').on('dialogopen', function () {
+		var popContainer = $(this);
+		$('.portrait_img_box', popContainer).each(function () {
+			var imgTg = $(this);
+			KyoboBookPub.ink.checkImagePortrait(imgTg);
+		});
+
+		$('.detail_view_control .btn_view_control', popContainer).on('click', function () {
+			$('.detail_view_control .btn_view_control', popContainer).removeClass('active');
+			$(this).addClass('active');
+			var activeContents = $('.' + $(this).data('combine-contents'));
+
+			activeContents.siblings().removeClass('active');
+			activeContents.addClass('active');
+
+			if ($(this).data('combine-contents') === 'combine_prod_review') {
+				KyoboBookPub.ink.page.setCommentList();
+				KyoboBookPub.ink.autoOverflowContents(popContainer);
+
+				$('.killing_part_item .custom_scroll_wrap').each(function (index) {
+					if (this.simpleBar !== undefined) {
+						var that = this;
+						// setTimeout(function () {
+							that.simpleBar.recalculate();
+						// }, 100);
+					}
+				});
+			}
+
+		});
+	});
+});
+
+// 상품 정보 영역 swiper
+function prodInfoThumbSwiper() {
+	var prodThumbContainer = $('.prod_thumb_swiper_wrap');
+
+	$('.portrait_img_box').each(function () {
+		var imgTg = $(this);
+		var imgContainer = $(this).closest('.blur_img_wrap');
+		KyoboBookPub.ink.checkImagePortrait(imgTg, imgContainer);
+
+		imgTg.find('img').on('load', function () {
+			KyoboBookPub.ink.checkImagePortrait(imgTg, imgContainer);
+
+			if (imgContainer.hasClass('landscape')) {
+				new blurify({
+					images: $(this).find('.blur_img_box img'),
+					blur: 6,
+					mode: 'auto',
+				});
+			}
+		});
+	});
+
+	$('.blur_img_wrap').each(function () {
+		if ($(this).hasClass('landscape')) {
+			new blurify({
+				images: $(this).find('.blur_img_box img'),
+				blur: 6,
+				mode: 'auto',
+			});
+		}
+	});
+
+	var prodThumbSwiper;
+	if ($('.swiper-slide', prodThumbContainer).length > 0) {
+		prodThumbContainer.addClass('active');
+
+		$('.portrait_img_box img').each(function () {
+			$(this).attr('src', $(this).data('src')).removeClass('swiper-lazy');
+			this.removeAttribute('data-src');
+		});
+	}
+	if ($('.swiper-slide', prodThumbContainer).length > 1) {
+		prodThumbSwiper = new CustomSwiper(prodThumbContainer.find('.swiper-container'), {
+			init: false,
+			slidesPerView: 1,
+			effect: 'fade',
+			navigation: {
+				nextEl: prodThumbContainer.find('.swiper_control_box .swiper-button-next')[0],
+				prevEl: prodThumbContainer.find('.swiper_control_box .swiper-button-prev')[0],
+			},
+			pagination: {
+				el: prodThumbContainer.find('.swiper_control_box .swiper-pagination')[0],
+				type: 'fraction',
+				formatFractionCurrent: function (number) {
+					return KyoboBookPub.ink.setPrependZero(number, 2);
+				},
+				formatFractionTotal: function (number) {
+					return KyoboBookPub.ink.setPrependZero(number, 2);
+				},
+			},
+		});
+
+		prodThumbSwiper.init();
+		prodThumbSwiper.lazy.loadInSlide(0);
+
+		prodThumbSwiper.on('slideChange', function () {
+			if (prodThumbSwiper.activeIndex === 0) {
+				$('.btn_swiper_floating.prev', prodThumbContainer).addClass('disabled');
+				$('.btn_swiper_floating.next', prodThumbContainer).removeClass('disabled');
+			} else if (prodThumbSwiper.activeIndex === $('.swiper-slide', prodThumbContainer).length - 1) {
+				$('.btn_swiper_floating.next', prodThumbContainer).addClass('disabled');
+				$('.btn_swiper_floating.prev', prodThumbContainer).removeClass('disabled');
+			} else {
+				$('.btn_swiper_floating.next', prodThumbContainer).removeClass('disabled');
+				$('.btn_swiper_floating.prev', prodThumbContainer).removeClass('disabled');
+			}
+		})
+
+		$('.btn_swiper_floating', prodThumbContainer).on('click', function () {
+			if ($(this).hasClass('prev')) {
+				$(this).siblings().removeClass('disabled');
+
+				if ($(this).hasClass('disabled')) $(this).removeClass('disabled');
+				prodThumbSwiper.slideTo(prodThumbSwiper.activeIndex - 1);
+
+				if (prodThumbSwiper.activeIndex === 0) {
+					$(this).addClass('disabled');
+				}
+			} else {
+				$(this).siblings().removeClass('disabled');
+
+				if ($(this).hasClass('disabled')) $(this).removeClass('disabled');
+				prodThumbSwiper.slideTo(prodThumbSwiper.activeIndex + 1);
+
+				if (prodThumbSwiper.activeIndex === $('.swiper-slide', prodThumbContainer).length - 1) {
+					$(this).addClass('disabled');
+				}
+			}
+		});
+	} else {
+		$('.btn_swiper_floating', prodThumbContainer).remove();
+		$('.swiper_control_box', prodThumbContainer).remove();
+		prodThumbContainer.addClass('single_slide');
+	}
+
+	prodThumbContainer.on({
+		'mouseenter': function () {
+			prodThumbContainer.addClass('hover');
+		},
+		'mouseleave': function () {
+			prodThumbContainer.removeClass('hover');
+		}
+	});
+}
+
+// 상품 상단 - 리뷰 영역 선택 시 하단 리뷰로 이동
+function reviewTabAnchor() {
+	if ($('.prod_review_box .btn_go_review').length > 0) {
+		$('.prod_review_box .btn_go_review').on('click', function () {
+			var reviewOffsetTop;
+			reviewOffsetTop = Math.floor($('#scrollSpyProdReview').offset().top) - 151;
+			$('html, body').stop().animate({scrollTop: reviewOffsetTop}, 300);
+		});
+	}
+}
+
+function placeInfoAnchor() {
+	if ($('.prod_guide_wrap .btn_more_view').length > 0) {
+		$('.prod_guide_wrap .btn_more_view').on('click', function (event) {
+			event.preventDefault();
+			if ($($(this).attr('href')).length > 0) {
+				var placeOffsetTop;
+				placeOffsetTop = Math.floor($($(this).attr('href')).offset().top) - 151;
+				$('html, body').stop().animate({scrollTop: placeOffsetTop}, 300);
+			}
+		});
+	}
+}
+
+function colProdInfoAnchor() {
+	if ($('.prod_detail_view_wrap .col_prod_info a[href^="#"]').length > 0) {
+		$('.prod_detail_view_wrap .col_prod_info a[href^="#"]').on('click', function (event) {
+			event.preventDefault();
+			if ($($(this).attr('href')).length > 0) {
+				var placeOffsetTop;
+				placeOffsetTop = Math.floor($($(this).attr('href')).offset().top) - 151;
+				$('html, body').stop().animate({scrollTop: placeOffsetTop}, 300);
+			}
+		});
+	}
+}
+
+// 상품상세 앵커탭 기능
+function setProdDetailAnchor() {
+	if ($('.tab_wrap.prod_detail_body').length > 0) {
+		var _tabLinks;
+		_tabLinks = $('.tab_wrap.prod_detail_body > .tab_list_wrap .tabs .tab_item .tab_link');
+
+		// 옵션영역 펼치기
+		$('.btn_option_more', '.prod_option_info_wrap').on('click', function () {
+			var optionSelectBox = $(this).closest('.prod_option_info_wrap');
+
+			if (optionSelectBox.hasClass('active')) {
+				optionSelectBox.removeClass('active');
+				$(this).find('.hidden').text('옵션 선택 영역 펼치기');
+			} else {
+				optionSelectBox.addClass('active');
+				$(this).find('.hidden').text('옵션 선택 영역 접기');
+			}
+		});
+
+		// 상품 상세 탭 링크 클릭시 해당 위치로 이동
+		_tabLinks.on('click.product', function (event) {
+			event.preventDefault();
+
+			scrollProdTabAnchor(event.currentTarget.getAttribute('href'));
+		});
+
+		function scrollProdTabAnchor(targetId) {
+			var offsetTop,
+				oldAddOffset;
+			oldAddOffset = $(targetId).data('add-offset');
+			// console.log($(targetId).data('add-offset'), $('.cart_top_wrap').outerHeight());
+			offsetTop = $(targetId).offset().top - 151;
+			$('html').stop().animate({scrollTop: offsetTop}, {
+				duration: 300,
+				step: function (now, tween) {
+					// console.log(now, tween);
+					if (oldAddOffset !== $(targetId).data('add-offset')) {
+						scrollCartAnchor(targetId);
+					}
+				}
+			});
+		}
+
+		// 상세 컨텐츠 블럭별 class 값 변경 Observer
+		var observer = new MutationObserver(function (mutations) {
+			mutations.forEach(function (mutation) {
+				if (mutation.attributeName === 'class') {
+					var target,
+						currentClassList;
+					target = mutation.target;
+					currentClassList = target.classList.value;
+					if (target.dataset.prevClass !== currentClassList) {
+						target.dataset.prevClass = currentClassList;
+
+						setTabBtnActive();
+					}
+				}
+			});
+		});
+
+		// 스크롤에 따라 탭 active 상태 변경
+		function setTabBtnActive() {
+			var activeIndex;
+			activeIndex = $('.prod_detail_contents .tab_content.sps-blw').length - 1;
+
+			_tabLinks.parent().removeClass('active');
+			if (activeIndex !== -1) {
+				_tabLinks.eq(activeIndex).parent().addClass('active');
+			}
+		}
+
+		document.querySelectorAll('.prod_detail_contents .tab_content.sps').forEach(function (target) {
+			target.dataset.prevClass = target.classList;
+			observer.observe(target, {attributes: true});
+		});
+	}
+}
+
+// 상품 상세 상단 타이틀 더보기 버튼 - 한 개만 노출 되도록
+function setProdTitleMoreBtn() {
+	var overflowEl,
+		overflowElCnt;
+	overflowEl = $('.prod_detail_title_wrap .auto_overflow_wrap.overflow');
+	overflowElCnt = overflowEl.length;
+
+	if (overflowElCnt > 1) {
+		overflowEl.each(function (index) {
+			if (index < overflowElCnt - 1) {
+				$(this).find('> .auto_overflow_footer .btn_more_detail').remove();
+			}
+		});
+	}
+
+}
+
+// 리뷰(댓글) 목록
+
+// 상품상세 스와이퍼 공통
+function prodSwiperCommon() {
+	// 스크롤
+	if ($('.prod_swiper_wrap').length > 0) {
+		$('.prod_swiper_wrap').each(function () {
+			var prodCommonSwiperEl = $(this);
+			if ($('.swiper-slide', prodCommonSwiperEl).length > 1) {
+				var prodCommonSwiper = new CustomSwiper(prodCommonSwiperEl, {
+					slidesPerView: 'auto',
+					speed: 500,
+					scrollbar: {
+						el: $('.swiper-scrollbar', prodCommonSwiperEl)[0],
+					},
+					freeMode: true,
+					keyboard: true,
+				});
+
+			}
+		});
+	}
+
+	// 네비 있음
+	if ($('.prod_nav_swiper_wrap').length > 0) {
+		$('.prod_nav_swiper_wrap').each(function () {
+			var prodCommonNavSwiperEl = $(this);
+			var swiperControlEl;
+			prodCommonNavSwiperEl.parent().is('.product_detail_area') ? swiperControlEl = prodCommonNavSwiperEl.closest('.product_detail_area').find('.swiper_control_box') : swiperControlEl = prodCommonNavSwiperEl.closest('.prod_related_swiper_wrap').find('.swiper_control_box');
+
+			if ($('.swiper-slide', prodCommonNavSwiperEl).length > 1) {
+				var prodCommonNavSwiper = new CustomSwiper(prodCommonNavSwiperEl, {
+					spaceBetween: 20,
+					speed: 500,
+					navigation: {
+						nextEl: swiperControlEl.find('.swiper-button-next')[0],
+						prevEl: swiperControlEl.find('.swiper-button-prev')[0],
+					},
+					pagination: {
+						el: swiperControlEl.find('.swiper-pagination')[0],
+						type: 'fraction',
+						formatFractionCurrent: function (number) {
+							return KyoboBookPub.ink.setPrependZero(number, 2);
+						},
+						formatFractionTotal: function (number) {
+							return KyoboBookPub.ink.setPrependZero(number, 2);
+						},
+					},
+				});
+			} else {
+				swiperControlEl.remove();
+			}
+		});
+	}
+
+	// 스크롤
+	if ($('.prod_swiper_text').length > 0) {
+		$('.prod_swiper_text').each(function () {
+			var prodTextSwiperEl = $(this);
+			if ($('.swiper-slide', prodTextSwiperEl).length > 2) {
+				var prodTextwiper = new CustomSwiper(prodTextSwiperEl, {
+					slidesPerView: 'auto',
+					speed: 500,
+					scrollbar: {
+						el: $('.swiper-scrollbar', prodTextSwiperEl)[0],
+					},
+					freeMode: true,
+					keyboard: true,
+				});
+
+			}
+		});
+	}
+}
+
+// 추가 230911 상품상세 뷰포트 개선
+// 상품상세 탭메뉴 고정 감지
+function observeFixedTab(){
+  var $target = $('.tab_wrap.prod_detail_body .tab_list_wrap .tab_list_inner');
+  if($target.length){
+    var observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        //console.log(mutation);
+        var is_fixed = $target.is('.sps-blw');
+        $('.header_wrapper').css({'visibility': (is_fixed?'hidden':'visible')});
+        $('.header_wrapper .anb_wrap').toggle(!is_fixed); // 수정 231121 햄버거 메뉴 레이어 숨김 처리
+        $target.css({'top': (is_fixed?0:'')});
+      });
+    });
+    observer.observe($target[0], {attributes: true});
+  }
+}

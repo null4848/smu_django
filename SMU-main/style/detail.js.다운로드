@@ -1,0 +1,125 @@
+/* globals KbbJS */
+// console.log('** [product] /js/detail.js')
+
+;(function (ResName) {
+  /**
+   * GA4 IFrame Youtube API 기능 구현 - 20230202
+   */
+  const initYoutubeGA360 = function () {
+    const tag = document.createElement('script')
+    tag.src = "https://www.youtube.com/iframe_api"
+    const firstScriptTag = document.getElementsByTagName('script')[0]
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // function onPlayerReady() {
+    //   // console.log("hey Im ready");
+    // }
+
+    let viewDir
+    let title
+
+    const onPlayerStateChange = function (event) {
+      if (event.data == YT.PlayerState.PLAYING || event.data == YT.PlayerState.PAUSED) {
+        window.ga360.GA_Event('click_종이책_상품상세_' + viewDir, '상세탭_상품정보', '북트레일러', '클릭_동영상', title);
+      }
+    }
+
+    window.onYouTubeIframeAPIReady = function (p1, p2, p3) {
+      viewDir = p1
+      title = p2
+      return new YT.Player('youtube-video' + p3, {
+        events: {
+          // 'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      })
+    }
+  }
+
+  /**
+   * 상품상세 스크립트 로드
+   */
+  function importBizScripts() {
+    /** @type {string} 상품유형 */
+    const PROD_TYPE = KbbJS.getOption('plugins.ui-product.type')
+
+    /** @type {boolean} 모바일기기 여부 */
+    const bMobile = KbbJS.isMobile()
+
+    const aImportList = [
+      // '/assets/js/func/addr-finder.js',
+      '/assets/js/func/product-preview.js',
+      // '/assets/js/func/recently-contents.js',
+      '/assets/js/func/review-form.js',
+      '/assets/js/func/review-list.js',
+      '/assets/js/func/review-overview.js',
+      {
+        name: 'detailMain',
+        url: '/assets/js/func/main.js'
+      },
+      /** 윙배너 */
+      bMobile ? undefined : '/assets/js/func/wing-banner.js',
+      {
+        /**
+         * local-common-js: 고유 이름
+         * KbbJS.importLocal 인터페이스에서 사용
+         */
+        name: 'local-common-js',
+        url: '/assets/js/pub/ui_product_prd_ink.js',
+        dependOn: [ResName.KBB_CM_SCRIPT, 'product_ink.css']
+      }
+    ].filter(Boolean)
+
+    // 상품 타입별 임시 import
+    switch (PROD_TYPE) {
+      case 'KOR':
+      case 'ENG':
+      case 'POD':
+      case 'OPN':
+        aImportList.push('/assets/js/func/pop-collect-sentence.js')
+        if (PROD_TYPE === 'OPN') {
+          aImportList.push(
+            '/CDN/css/etc_' + (bMobile ? 'open_market_mok' : 'ink') + '.css'
+          )
+        }
+        break
+    }
+
+    KbbJS.import(aImportList)
+
+    KbbJS.importLocal(
+      bMobile ?
+      [
+        'pub/PRD_SCR-BIZ05-01-M001.js',
+        'pub/SCR-BIZ05-01-M203',
+        'pub/SCR-BIZ05-01-M207'
+      ] :
+      [
+        // 이미지크게보기 pubScript
+        // 'pub/SCR-BIZ01-01-P001',
+        'pub/SCR-BIZ05-01-P001',
+        // 미리보기 pubScript
+        // 'pub/SCR-BIZ05-01-P002',
+        'pub/SCR-BIZ05-01-P029',
+        'pub/SCR-BIZ05-01-P207',
+        'pub/SCR-BIZ05-09-P001'
+      ]
+    )
+  }
+
+  // @TODO: 영상이 없는 페이지에서 예외처리
+  initYoutubeGA360()
+  importBizScripts()
+
+  /** 상품상세 퍼블스크립트 예외처리 */
+  KbbJS.setOption('ui.pub.init.excludes', [
+    'autoOverflowContents',
+    'setBreadCrumb'
+  ])
+
+  /** 상품상세 모듈 사용 */
+  KbbJS.use('ui-product', {
+    dependOn: [ResName.KBB_CM_LOCAL_JS],
+    plugins: []
+  })
+})(KbbJS.getOption('resource.names'))

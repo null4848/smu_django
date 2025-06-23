@@ -1,0 +1,48 @@
+/* eslint-disable no-var */
+/* globals KbbJS */
+
+// TODO: remove debug log
+// console.log('** [product] /js/vars.js')
+
+/**
+ * [ES5] 스크립트 로드
+ */
+;(function (ResName) {
+  KbbJS.import([
+    ResName.KAKAO_SDK,
+    ResName.FACEBOOK_SDK
+  ])
+
+  KbbJS.setOption('plugins.ui-sns-share', {
+    dependOn: [ResName.KAKAO_SDK, ResName.FACEBOOK_SDK, ResName.KBB_CM_SCRIPT],
+    elements: {
+      root: '.sns_share_wrap',
+      items: [
+        { name: 'KAT', selector: 'kakaotalk', isPc: false },
+        { name: 'KAS', selector: 'kakao', isPc: true },
+        { name: 'LIN', selector: 'line', isPc: false },
+        { name: 'NAB', selector: 'band', isPc: true },
+        { name: 'FAB', selector: 'facebook', isPc: true },
+        { name: 'TWI', selector: 'twitter', isPc: true },
+        { name: 'MSG', selector: 'message', isPc: false },
+        { name: 'MORE', selector: 'more', isPc: false },
+        { name: 'URL', selector: 'url_copy', isPc: true }
+      ]
+    }
+  })
+  KbbJS.use('ui-alliance')
+  KbbJS.use('ui-footer-notice')
+  KbbJS.use('ui-my-menu')
+  KbbJS.use('ui-wing-banner')
+  KbbJS.use('ui-marketing-popup')
+
+  // 로딩UI 제어
+  KbbJS.setOption('ui.loading.freeze', true)
+  KbbJS.ready('ui').then(ui => {
+    // 세컨드
+    const nFreezeTime = 5
+    setTimeout(() => {
+      ui.freezeLoading = false
+    }, nFreezeTime * 1000)
+  })
+})(KbbJS.getOption('resource.names'))

@@ -1,0 +1,20 @@
+/*
+ * name : SCR-BIZ05-09-P001.js
+ * desc : 결합상품 전용 실행 자바스크립트
+ * writer : glim
+ * create : 2021/12/10
+ * update :
+ * -
+ */
+
+$(function () {
+	var optionSelectWrap = $('.prod_detail_footer');
+	$('.portrait_img_box', optionSelectWrap).each(function () {
+		var imgTg = $(this);
+		KyoboBookPub.ink.checkImagePortrait(imgTg);
+	});
+
+
+});
+
+

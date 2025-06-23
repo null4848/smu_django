@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70" height="70.999" viewBox="0 0 70 70.999">
+  <defs>
+    <filter id="Union_173" x="13.002" y="10.001" width="48.997" height="60.998" filterUnits="userSpaceOnUse">
+      <feOffset dx="3" dy="6" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient" x1="0.065" y1="0.022" x2="0.852" y2="0.943" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ff628c"/>
+      <stop offset="1" stop-color="#f42664"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.105" x2="1" y2="0.986" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ffde09"/>
+      <stop offset="1" stop-color="#feaf11"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="0.182" x2="0.829" y2="0.863" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#1e1e1e"/>
+      <stop offset="1" stop-color="#5a5858"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="1" y1="-0.145" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ffcfcf"/>
+      <stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+  </defs>
+  <g id="icon" transform="translate(-1015 -665)">
+    <rect id="area" width="70" height="70" rx="16" transform="translate(1015 665)" fill="#5055b1" opacity="0"/>
+    <g id="icon-2" data-name="icon" transform="translate(18773.963 19841.961)">
+      <rect id="Rectangle_20389" data-name="Rectangle 20389" width="44" height="44" transform="translate(-17745.963 -19163.961)" fill="none"/>
+      <g id="icon-3" data-name="icon" transform="translate(-17736.678 -19160.611)">
+        <g id="Group_1934" data-name="Group 1934" transform="translate(0 0)">
+          <g transform="matrix(1, 0, 0, 1, -22.29, -16.35)" filter="url(#Union_173)">
+            <path id="Union_173-2" data-name="Union 173" d="M5.956,36.882l-.807-.77a.215.215,0,0,0-.3,0l-.808.77a.419.419,0,0,1-.711-.281V32.8H6.667V36.6a.407.407,0,0,1-.419.4A.419.419,0,0,1,5.956,36.882ZM2,32.8a2,2,0,0,1-2-2V2A2,2,0,0,1,2,0H21a4,4,0,0,1,4,4V28.795a4,4,0,0,1-4,4Z" transform="translate(22 16)" fill="#fff"/>
+          </g>
+          <path id="Rectangle_19900" data-name="Rectangle 19900" d="M2,0H22a4,4,0,0,1,4,4V29a4,4,0,0,1-4,4H2a2,2,0,0,1-2-2V2A2,2,0,0,1,2,0Z" transform="translate(-0.285 -0.35)" fill="url(#linear-gradient)"/>
+          <rect id="Rectangle_3519" data-name="Rectangle 3519" width="3" height="33" transform="translate(18.716 -0.35)" fill="url(#linear-gradient-2)"/>
+          <path id="Path_37397" data-name="Path 37397" d="M2.667,4.12l-.822-.776a.22.22,0,0,0-.3,0L.723,4.12A.427.427,0,0,1,0,3.837V0H3.39V3.837a.427.427,0,0,1-.723.283" transform="translate(3.392 33.057)" fill="url(#linear-gradient-3)"/>
+          <rect id="Rectangle_19902" data-name="Rectangle 19902" width="2" height="5" rx="1" transform="translate(8.715 4.65) rotate(90)" fill="url(#linear-gradient-4)"/>
+          <rect id="Rectangle_19903" data-name="Rectangle 19903" width="2" height="8" rx="1" transform="translate(11.715 8.65) rotate(90)" fill="url(#linear-gradient-4)"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

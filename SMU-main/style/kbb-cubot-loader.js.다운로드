@@ -1,0 +1,125 @@
+/**
+ * 큐봇 초기화 스크립트 (IIFE)
+ */
+;(() => {
+  const IS_MOBILE = KbbJS.isMobile()
+  const JWT_ALGORITHM = 'eyJhbGciOiJFUzI1NiJ9'
+  const CubotTokenDataList = [
+    {
+      stage: 'production',
+      cuid: '4ffe4f3c-7219-4bd2-a7ae-eba4aefc9b19',
+      token: 'eyJjdWlkIjoiNGZmZTRmM2MtNzIxOS00YmQyLWE3YWUtZWJhNGFlZmM5YjE5Iiwic2VydmljZXMiOlsiZHNvYyJdLCJhY2Nlc3NJZCI6IjFNWTUzaG00QjB0cTdLbHBVMTlnQW5pQSJ9.EZ8i_WYwjAbXILaVboSZjIQGO4C4Z0Ul-20HsPiw9r5CAKAcCFEOcJr7-HlomR6IlAM_dxxJv76lU2H6hIOXSA'
+    },
+    {
+      stage: 'development',
+      cuid: 'f5fbf232-7e27-4ca3-b922-b3a56d79780b',
+      token: 'eyJjdWlkIjoiZjVmYmYyMzItN2UyNy00Y2EzLWI5MjItYjNhNTZkNzk3ODBiIiwic2VydmljZXMiOlsiZHNvYyJdLCJhY2Nlc3NJZCI6IlBIbU5QT2ZXOGUzWGZhaElwQ1FyQmU1VCJ9.UQgXaSWLSMRH09JDuwp3SjNRSvMHzDOEY44cHEfJcmyIL3d5uxiQnXJ54rtPDOaXa4ht8z4fawwamRYYYsFyCg'
+    },
+    {
+      stage: 'staging',
+      cuid: '2e514b09-86fe-4c69-8ec9-0a8c8416d2ae',
+      token: 'eyJjdWlkIjoiMmU1MTRiMDktODZmZS00YzY5LThlYzktMGE4Yzg0MTZkMmFlIiwic2VydmljZXMiOlsiZHNvYyJdLCJhY2Nlc3NJZCI6InNIbXg3OVc4bXhYeE9GNmNsUUZxcWpiZyJ9.Gkp1TUio-TkXUcbck93-3f8XQIeHPnpnDj6aMYEBY0OoxgTClK7wvEemEUvV7vWQrUkaWT9C0oiHoTqjEpdoxg'
+    }
+  ].map(o => ({ ...o, token: `${JWT_ALGORITHM}.${o.token}` }))
+
+  const hasDebugParam = window.location.search.includes('debug')
+  const debugLog = (msg, type = 'log') => {
+    if (!hasDebugParam) return
+    console[type](msg)
+  }
+
+  const parseTokenData = () => {
+    let stage = 'production'
+    const origin = window.location.origin
+    if (origin.includes('ndev.') || origin.includes('local.')) {
+      stage = 'development'
+    } else if (origin.includes('nstg.')) {
+      stage = 'staging'
+    }
+    return CubotTokenDataList.find(o => o.stage === stage)
+  }
+
+  const { cuid, token } = parseTokenData()
+
+  const loadResource = (type, url, callback) => {
+    const element = document.createElement(type === 'css' ? 'link' : 'script')
+    if (type === 'css') {
+      element.rel = 'stylesheet'
+      element.href = url
+    } else {
+      element.src = url
+    }
+    return new Promise((resolve, reject) => {
+      element.onload = () => {
+        callback && callback()
+        resolve()
+      }
+      element.onerror = reject
+      document.head.appendChild(element)
+    }).catch(err => console.error(err))
+  }
+
+  const initCubotScript = () => {
+    debugLog('Start Cubot init script...')
+
+    const iconfile = `${IS_MOBILE ? 'M' : 'PC'}_icon.svg`
+    const icon = 'https://contents.kyobobook.co.kr/pmtn/2023/general/curation_bot/' + iconfile
+    const uiConfig = {
+      position: 'right-bottom',
+      pcVertical: 140,
+      pcHorizontal: 30,
+      moVertical: 65,
+      moHorizontal: 30,
+      bubbleFontColor: '#000000',
+      bubbleReplacedFontColor: '#5055B1',
+      bubbleBgColor: '#F2F2F2',
+      headerBgColor: '#F2F2F2',
+      headerFontColor: '#000000',
+      popupFontColor: '#000000',
+      popupReplacedFontColor: '#5055B1',
+      iconLocation: icon,
+      itemShowCount: 3,
+      useOriginalPrice: true,
+      useSalePrice: true,
+      useDcRate: true,
+      useBrandName: true,
+      useItemName: true,
+      useScore: false
+    }
+
+    const widget = window.EmbeddableWidget()
+    // window 객체에 EigeneWishFunc 할당
+    window.EigeneWishFunc = widget.EigeneWishFunc
+    // window 객체에 EigeneCartFunc 할당
+    window.EigeneCartFunc = widget.EigeneCartFunc
+
+    window.initializeCubotWidget = ({
+      page = '',
+      categoryId = '',
+      categoryName = '',
+      authorId = '',
+      barcode = ''
+    }) => {
+      widget.EigeneConfigFunc({
+        cuid,
+        token,
+        page,
+        categoryId,
+        categoryName,
+        // brandId: 'author_id'
+        brandId: authorId,
+        // itemId: '바코드 값'
+        itemId: barcode,
+        uiConfig
+      })
+      widget.mount({ parentElement: null })
+    }
+
+    debugLog('Success Cubot init script loaded')
+  }
+
+  (async (baseURL) => {
+    await loadResource('css', `${baseURL}/css/main.css`)
+    await loadResource('js', `${baseURL}/js/main.js`, initCubotScript)
+  })(`https://cubot.eigene.io/${cuid}/static`)
+})()

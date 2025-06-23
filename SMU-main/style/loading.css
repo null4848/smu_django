@@ -1,0 +1,37 @@
+html > body > .loading_box {
+  position: fixed;
+  display: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  align-items: center;
+  z-index: 2000;
+}
+html > body > .loading_box > .loading_dimmed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  opacity: 1;
+}
+html > body > .loading_box > .loading_box_inner {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  z-index: 1;
+}
+html > body > .loading_box > .loading_box_inner .loading_target {
+  width: 100%;
+}
+html.loading > body > .loading_box {
+  display: flex;
+}
+html.kbb_loaded > body > .loading_box > .loading_dimmed {
+  background-color: transparent;
+}

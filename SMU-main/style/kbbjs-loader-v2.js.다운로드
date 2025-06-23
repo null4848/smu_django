@@ -1,0 +1,769 @@
+/**
+ * [ES5] KbbJS Loader
+ * - kbb-js 네임스페이스 정의
+ * - 전역 kbb-js 객체 정의
+ * - kbb-js 사용자 옵션 정의
+ * - kbb-js 초기화 스크립트 추가/임포트
+ * - CustomSwiper 인터페이스 정의
+ */
+
+// IIFE - 즉시실행함수
+;(function () {
+  /**
+   * global namespace
+   */
+  const KBBJS_NAMESPACE = 'KbbJS'
+  const KBBJS_UNPKG_URL = '//unpkg.com/@kyobobook/kbb-js'
+
+  /**
+   * [CDN]/lib/kbb-js
+   */
+  // const KBBJS_BASE_URL = KBBJS_UNPKG_URL
+  const KBBJS_BASE_URL = '//localhost:3300/resources/fo/lib/kbb-js'
+  // const KBBJS_BASE_URL = '//contents.dev3.kyobobook.co.kr/resources/fo/lib/kbb-js'
+
+  const UiView = {
+    INK: 'ink',
+    MOK: 'mok'
+  }
+
+  /** 최근 본 컨텐츠 쿠키 설정 */
+  const HISTORY_MAX_SIZE = 10
+  const COOKIE_NAME = 'rc-cont'
+  const COOKIE_DOMAIN = '.kyobobook.co.kr'
+
+  const UI_VIEW = document.querySelector('html[data-view]').dataset.view
+  const isMobile = UI_VIEW === UiView.MOK
+
+  /**
+   * 사용자 초기화 전역 옵션 정의
+   */
+  const initOptions = {
+    ui: {
+      views: UiView,
+      viewDIR: UI_VIEW
+    },
+    ua: {
+      device: { isMobile }
+    },
+    // KbbJS 패키지 로드시 사용
+    loader: {
+      baseURL: KBBJS_BASE_URL,
+      loadingMan: 'KbbLoading'
+    },
+    // plugin, plugin-ui 모듈
+    plugins: [],
+    // 외부 라이브러리 설정 -> common-vars.js
+    // vendors: {},
+    // 리소스 설정 -> common-vars.js
+    // resource: {},
+    // 이벤트 옵션
+    events: {}
+  }
+
+  /**
+   * KbbJS 전역 객체 constructor
+   * @param {Object} options 옵션
+   */
+  function KbbClass (options) {
+    this.name = KBBJS_NAMESPACE
+    this._loaded = false
+    this.options = options || {}
+    this.searchParams = new URLSearchParams(window.location.search)
+  }
+
+  const fn = KbbClass.prototype
+
+  ;['get', 'set'].forEach(function (prop) {
+    const sMethod = prop + 'Option'
+    /**
+     * get/setOption
+     * @param {string} sub 대상 경로
+     * @param {any} value set:대상값, get:기본값
+     * @returns {any|undefined} get:대상값, set:undefined
+     */
+    fn[sMethod] = function (sub, value) {
+      if (sub == null) {
+        return console.warn('invalid argument:', sub)
+      }
+      if (/^plugins\./.test(sub)) {
+        return this[prop + 'PluginOptions'](sub, value)
+      }
+      const aPath = sub.split('.')
+      const moduleName = aPath.shift()
+      const module = this.getModule(moduleName)
+      if (module == null) {
+        return _[prop](this.options, sub, value)
+      }
+      return module[sMethod](aPath.join('.'), value)
+    }
+  })
+
+  /**
+   * Plugin 오브젝트를 반환
+   * options.plugins: {PluginObject}[]
+   * @param {string} sub 플로그인 이름(경로)
+   * @returns {Object|undefined}
+   */
+  fn.getPluginData = function (sub) {
+    sub = this._parseModuleName(sub)
+    if (sub == null || !sub.length) return
+    return _.find(this.getOption('plugins'), function (o) {
+      return _.camelCase(o.name) === sub
+    })
+  }
+
+  fn.uniquePluginData = function (data) {
+    let aPlugins = this.getOption('plugins')
+    let tPlugin
+    if (aPlugins == null) {
+      aPlugins = []
+      this.options.plugins = aPlugins
+    } else {
+      tPlugin = this.getPluginData(data.name)
+      if (tPlugin != null) return tPlugin
+    }
+    aPlugins.push(data)
+    return data
+  }
+
+  /**
+   * 플러그인 모듈 옵션 경로를 분석 및 반환
+   * @param {string} sub 옵션 이름(경로)
+   * @returns {string}
+   */
+  fn._parseModuleOptionPath = function (sub) {
+    const arr = sub.replace(/^(plugins\.)*([^.]+)[.]*(.*)$/, '$2,$3').split(',')
+    sub = arr[1]
+    if (sub.length) sub = sub.replace(/^options[.]*/, '')
+    return {
+      name: arr[0].length ? _.camelCase(arr[0]) : null,
+      sub: sub.length ? sub : null
+    }
+  }
+
+  /**
+   * Plugin 옵션을 반환
+   * options.plugins[index]: {Object}.options
+   * @param {string} sub 옵션 이름(경로)
+   * @param {any} def 기본값
+   * @returns {any}
+   */
+  fn.getPluginOptions = function (sub, def) {
+    const o = this._parseModuleOptionPath(sub)
+    const module = this.getModule(o.name)
+    if (module != null) {
+      if (o.sub == null) return module.options
+      return module.getOption(o.sub, def)
+    }
+    const oPlugin = this.getPluginData(o.name)
+    let tPath = 'options'
+    if (o.sub) tPath += '.' + o.sub
+    return _.get(oPlugin, tPath, def)
+  }
+
+  /**
+   * Plugin 옵션을 설정
+   * options.plugins[index]: {Object}.options
+   * @param {string} sub 옵션 이름(경로)
+   * @param {any} value 설정값
+   */
+  fn.setPluginOptions = function (sub, value) {
+    const o = this._parseModuleOptionPath(sub)
+    const module = this.getModule(o.name)
+    const bObjectValue = _.isPlainObject(value)
+    if (module != null) {
+      if (o.sub == null) {
+        if (bObjectValue) {
+          module._options = _.defaults(value, module.options)
+        } else {
+          console.warn('invalid setOption value:', sub)
+        }
+        return
+      }
+      return module.setOption(o.sub, value)
+    }
+    const oPlugin = this.uniquePluginData({
+      name: o.name,
+      options: {}
+    })
+
+    if (o.sub == null) {
+      if (bObjectValue) {
+        // console.log('!! defaults options:', sub)
+        oPlugin.options = _.defaults(value, oPlugin.options)
+      } else {
+        console.warn('invalid setOption value:', sub)
+      }
+      return
+    }
+    _.set(oPlugin, 'options.' + o.sub, value)
+  }
+
+  /**
+   * 모듈 이름을 분석 및 반환
+   * @param {string} sub 모듈 이름(경로)
+   * @returns {string}
+   */
+  fn._parseModuleName = function (sub) {
+    sub = sub.replace(/^plugins\./, '').split('.').shift()
+    return _.camelCase(sub)
+  }
+
+  /**
+   * 모듈 객체를 반환
+   * @param {string} sub module 경로
+   * @returns {Object|undefined} 모듈 객체
+   */
+  fn.getModule = function (sub) {
+    sub = this._parseModuleName(sub)
+    const module = this[sub] || _.get(this.plugins, sub)
+    // if (module != null) {
+    //   console.log('KbbJS.getModule:', sub, '->', module.sub)
+    // }
+    return _.has(module, '_options') ? module : undefined
+  }
+
+  /**
+   * 모듈 존재 여부를 반환
+   * TODO: get/set plugins option
+   * @param {string} name module 경로
+   * @returns {Object} 모듈 객체
+   */
+  fn.existsModule = function (name) {
+    return this.getModule(name) != null
+  }
+
+  /**
+   * 모듈의 초기화(initialized) 여부를 반환
+   * @param {string} name module 경로
+   * @returns {boolean}
+   */
+  fn.isModuleLoaded = function (name) {
+    const module = this.getModule(name)
+    if (module == null) return false
+    return module.initialized || false
+  }
+
+  fn._addModuleEvent = function (module, evtName, callback, bindType) {
+    const prop = ['events', _.camelCase(module), evtName].join('.')
+    let stack = this.getOption(prop)
+    if (stack == null) {
+      stack = []
+      this.setOption(prop, stack)
+    } else if (!Array.isArray(stack)) {
+      stack = [stack]
+      this.setOption(prop, stack)
+    }
+    stack.push({
+      bindType: bindType || 'once',
+      callback
+    })
+    // console.log(module, stack.length)
+  }
+
+  /**
+   * ModuleEvent Callback Interface: loaded
+   * @param {string|Function} [arg1] - 모듈명 or 이벤트 콜백
+   * @param {Function} [arg2] - 이벤트 콜백
+   * @returns this
+   */
+  fn.ready = function (arg1, arg2) {
+    const self = this
+    let moduleName = arg1 || 'core'
+    let fnCallback = arg2
+    if (_.isFunction(arg1)) {
+      moduleName = 'core'
+      fnCallback = arg1
+    }
+    const target = this.getModule(moduleName)
+    return new Promise(resolve => {
+      if (target != null) {
+        if (target.initialized) return resolve(target)
+        target.once('initialized', () => resolve(target))
+        return
+      }
+      self._addModuleEvent(moduleName, 'initialized', evt => resolve(evt.target))
+    }).then(module => {
+      if (_.isFunction(fnCallback)) fnCallback.call(module, module)
+      return module
+    })
+  }
+
+  /**
+   * ModuleEvent Callback Interface: others
+   * @param {string} module 모듈명
+   * @param {string} evtName 이벤트 유형
+   * @param {Function} callback 이벤트 콜백
+   * @param {string} bindType on|once 이벤트 리스너 유형
+   * @returns this
+   */
+  fn.bindEvent = function (module, evtName, callback, bindType) {
+    switch (evtName) {
+      case 'loaded':
+        return this.ready(module, callback)
+    }
+    return this._addModuleEvent(module, evtName, callback, bindType || 'once')
+  }
+
+  /**
+   * Get URL 파라메터
+   * @param {string} param 파라메터 이름
+   */
+  fn.getUrlParam = function (param) { return this.searchParams.get(param) }
+
+  /**
+   * KbbJS 스크립트를 로드
+   * @param {string|Object} uOpts baseURL or loader options
+   * @returns this
+   */
+  fn.load = function (uOpts) {
+    // 단, 한번만 로드
+    if (this._loaded) return this
+
+    if (_.isString(uOpts)) {
+      // baseURL
+      this.setOption('loader.baseURL', uOpts)
+    } else if (_.isPlainObject(uOpts)) {
+      // extends loader options
+      _.assign(this.options.loader, uOpts)
+    }
+
+    let baseURL = this.getOption('loader.baseURL', KBBJS_BASE_URL)
+    if (!/\/$/.test(baseURL)) {
+      baseURL += '/'
+    }
+
+    // 스크립트 디버깅 파라메터: ?kbbjs=version
+    let ver = this.getUrlParam('kbbjs')
+    if (ver) {
+      if (/^[\d.]+$/.test(ver)) {
+        baseURL = KBBJS_UNPKG_URL + '@' + ver
+      } else {
+        // (_.includes(baseURL, '/stage/') || _.includes(baseURL, '/latest/'))
+        if (/^[\d]{8}-[\d]{6}$/.test(ver)) {
+          ver = 'stage/' + ver
+        }
+        baseURL = baseURL.replace(/\/kbb-js\/.*$/, `/kbb-js/${ver}/`)
+      }
+    }
+
+    if (/.*unpkg.com/.test(baseURL) && !/dist\/$/.test(baseURL)) {
+      baseURL += '/dist/'
+    }
+
+    // override options.loader.baseURL
+    this.setOption('loader.baseURL', baseURL)
+
+    const el = document.createElement('script')
+    el.src = baseURL + 'init.min.js'
+    el.async = false
+    document.head.appendChild(el)
+
+    this._loaded = true
+
+    // TODO: remove debug timelog
+    // console.timeEnd('@ KbbJS.load')
+
+    // TODO: remove debug timelog
+    // console.time('@ KbbJS.load/core')
+    return this
+  }
+
+  fn.import = function (items, options) {
+    return this.ready('ui').then(function (module) {
+      return module.import(items, options)
+    })
+  }
+
+  fn.importLocal = function (items, options) {
+    const ResName = this.getOption('resource.names')
+    const KBB_CM_LOCAL_JS = _.get(ResName, 'KBB_CM_LOCAL_JS', 'local-common-js')
+    items = _.castArray(items).map(function (item) {
+      if (_.isString(item)) {
+        item = {
+          url: item,
+          dependOn: KBB_CM_LOCAL_JS
+        }
+      } else if (_.isPlainObject(item)) {
+        _.set(item, 'dependOn', _.concat(
+          KBB_CM_LOCAL_JS,
+          _.get(item, 'dependOn', []))
+        )
+      } else {
+        console.warn('undeinfed import type:', item)
+        return undefined
+      }
+
+      if (!/^\//.test(item.url)) {
+        item.url = '/assets/js/' + item.url
+      }
+      if (!/\.(js|css)$/.test(item.url)) {
+        item.url += '.js'
+      }
+      return item
+    }).filter(Boolean)
+
+    return this.import(items, options)
+  }
+
+  fn._registerPluginData = function (data) {
+    let tPlugin = this.getPluginData(data.name)
+    if (tPlugin == null) {
+      tPlugin = this.uniquePluginData(data)
+    } else {
+      Object.keys(data).forEach(function (k) {
+        let value = data[k]
+        const raw = _.get(tPlugin, k)
+        if (value === undefined || value === raw) return
+        switch (k) {
+          case 'name':
+            return
+          case 'options':
+            value = _.defaults(value, tPlugin[k])
+            break
+        }
+        tPlugin[k] = value
+      })
+    }
+    return tPlugin
+  }
+
+  /**
+   * 플러그인-모듈 사용을 위한 인터페이스
+   */
+  fn.use = function (name, options) {
+    const self = this
+    let data = name
+
+    // 코어 모듈의 로드 여부
+    const bCoreLoad = this.isModuleLoaded('core')
+
+    if (_.isString(name)) {
+      data = { name, autoLoad: true, options: {} }
+    } else {
+      data.autoLoad = true
+    }
+
+    if (options != null) {
+      data.options = _.assign(data.options, options)
+    }
+    this._registerPluginData(data)
+
+    // console.log('KbbJS.use:', data.name)
+    if (bCoreLoad) {
+      return this.core.use(data)
+    }
+
+    return self.ready().then(function (module) {
+      // console.log('KbbJS.use.ready.then.core.use:', data.name, '<-', module.name)
+      return module.use(data)
+    })
+  }
+
+  fn.isMobile = function () {
+    return this.getOption('ua.device.isMobile')
+  }
+
+  /**
+   * HTTP 통신 인터페이스
+   * - 모든 요청에 request.headers.Authorization 키에 access-token을 바인딩
+   * @see https://developer.mozilla.org/ko/docs/Web/API/Fetch_API
+   * @returns {Promise<response>}
+   */
+  fn.$http = function () {
+    const args = [].slice.call(arguments)
+    return this.ready().then(function (core) {
+      return core.$http.apply(core, args)
+    })
+  }
+
+  /**
+   * 최근 본 컨텐츠 아이템 추가
+   */
+  fn.addRecentlyContent = function () {
+    const args = [].slice.call(arguments)
+    const item = args[0]
+    const content = `${item.catg}|${item.type}|${item.id}`
+    const catg = item.catg
+
+    const getCookieOption = () => {
+      const now = new Date()
+      const oneMonthLater = new Date(now.setMonth(now.getMonth() + 1))
+      oneMonthLater.setHours(23)
+      oneMonthLater.setMinutes(59)
+      oneMonthLater.setSeconds(59)
+
+      const option = {
+        path: '/',
+        domain: COOKIE_DOMAIN,
+        expires: oneMonthLater
+      }
+
+      return Object.entries(option).map(([key, value]) => `${key}=${value}`).join('; ')
+    }
+
+    const getCookie = () => {
+      const recentCookie = document.cookie.split(';').find(item => item.includes(COOKIE_NAME))
+      const cookieValue = recentCookie ? recentCookie.split('=')[1] : null
+
+      if (cookieValue) {
+        return decodeURIComponent(cookieValue)
+      }
+
+      return cookieValue
+    }
+
+    const getList = () => {
+      let cookie = getCookie()
+
+      if (cookie != null) {
+        cookie = JSON.parse(cookie)
+        ;['p', 'e', 'b', 's'].forEach(catg => {
+          cookie = cookie.filter(x => getCatgData(cookie, catg, false).concat(getCatgData(cookie, catg, true)).includes(x))
+        })
+      }
+      return cookie
+    }
+
+    const getCatgData = (data, catg, isSame) => {
+      let filData = data.filter(val => {
+        const rcArr = val.split('|')
+        return isSame ? rcArr[0] === catg : rcArr[0] !== catg
+      })
+      if (isSame && filData.length > HISTORY_MAX_SIZE) {
+        filData = filData.slice(filData.length - HISTORY_MAX_SIZE, filData.length)
+      }
+      return filData
+    }
+
+    const cookie = getList()
+    if (cookie.length === 0) {
+      const option = getCookieOption()
+      document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify([content]))}; ${option}`
+      return
+    }
+    const cookieData = cookie
+    const catgData = cookieData.filter(val => {
+      const rcArr = val.split('|')
+      return rcArr[0] === catg && val !== content
+    })
+
+    // 같은 카테고리의 쿠키가 10개 이상일 경우 9개만 남기고 삭제
+    if (catgData.length >= HISTORY_MAX_SIZE) {
+      catgData.shift()
+    }
+
+    const data = cookie.map(val => {
+      const rcArr = val.split('|')
+      if (rcArr[0] === catg) { // 쿠키 카테고리가 같을 경우
+        const setVal = catgData.includes(val) ? val : null
+        return setVal
+      } else {
+        return val
+      }
+    }).filter(val => val != null)
+
+    data.push(content)
+
+    const option = getCookieOption()
+    document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(data))}; ${option}`
+    return
+  }
+
+  /**
+   * location.pathname 패턴을 비교하여 콜백을 실행
+   */
+  fn.matchLocPath = function (matchList, fnCallback) {
+    matchList = _.castArray(matchList || [])
+    const uPath = document.location.pathname
+    for (let i = 0; i < matchList.length; i += 1) {
+      const re = matchList[i]
+      if (re.test(uPath)) {
+        fnCallback()
+        return
+      }
+    }
+  }
+
+  /**
+   * 퍼블페이지 스크립트 경로를 반환
+   * - #TODO: 퍼블페이지 스크립트 마이그레이션 이후 제거
+   * @param {string} ink - PC 페이지 파일(15-23-P001)
+   * @param {string|boolean} mok - Mobile 페이지 파일, 동일한 시퀀스인 경우 boolean
+   * @returns {string}
+   */
+  fn.getPubScriptPath = function (ink, mok) {
+    const bMobile = this.isMobile()
+    if (_.isBoolean(mok) && mok) mok = ink.replace('P', 'M')
+    if (mok == null) return
+    const file = bMobile ? mok : ink
+    return {
+      url: '/assets/js/pub/SCR-BIZ' + file + '.js',
+      // dependOn: ResName.KBB_CM_LOCAL_JS,
+      restrict: bMobile ? 'ink' : 'mok'
+    }
+  }
+
+  /**
+   * 로그아웃
+   * @returns
+   */
+  fn.logout = function () {
+    return this.ready('auth').then(function (auth) {
+      return auth.logout()
+    })
+  }
+
+  // 전역 네임스페이스 정의
+  _.set(window, 'KBBJS_NAMESPACE', KBBJS_NAMESPACE)
+
+  // 전역 객체 정의
+  const KbbJS = new KbbClass(initOptions)
+  _.set(window, KBBJS_NAMESPACE, KbbJS)
+
+  const eachRemoveNoImgCls = function (_ndx, el) {
+    const $noImgWrap = $(el).closest('.no_img')
+    if (!$noImgWrap.length) return
+    $noImgWrap.removeClass('no_img')
+  }
+
+  /**
+   * CustomSwiper
+   * @param {JQuery|HTMLElement|string} container
+   * @param {*} userOpts
+   * @returns {Swiper}
+   */
+  window.CustomSwiper = function (container, userOpts) {
+    if (container == null) {
+      // console.warn('[CustomSwiper] undefined container parameter!')
+      return
+    }
+
+    if (window.KbbFunc) {
+      return window.KbbFunc.Swiper(container, userOpts)
+    }
+
+    /** jQuery 엘리먼트 여부 */
+    let $target
+    if (container instanceof jQuery) {
+      $target = container
+      container = $target[0]
+    } else {
+      $target = $(container)
+    }
+
+    if (!$target.length) return
+    if (_.isString(container)) {
+      // container = document.querySelector(container)
+      container = $target[0]
+    }
+
+    /**
+     * conflict 사용자 옵션: Swiper 중복 초기화 혀용 여부
+     * - true : 중복 초기화 가능 (기본값)
+     * - false: 중복 초기화 불가능
+     */
+    const conflict = KbbJS.getOption(
+      'swiper.conflict',
+      KbbJS.getUrlParam('swiper-conflict') !== '0'
+    )
+
+    let bRemoveNoImg = _.get(
+      userOpts,
+      'removeNoImg',
+      KbbJS.getUrlParam('swiper-noimg') === '1'
+    )
+
+    if ($target.hasClass('swiper-container lg')) {
+      bRemoveNoImg = true
+    }
+
+    const NO_IMG_SELECTOR = '.swiper-slide .no_img IMG[data-kbbfn="s3-image"]'
+
+    // kbbfn="s3-image" - swiper loop, slide-duplicate 오류 방어코드(1)
+    // let bRemoveNoImg = KbbJS.getOption('swiper.removeNoImg.beforeInit', false)
+    // if (!bRemoveNoImg) bRemoveNoImg = KbbJS.getUrlParam('swiper-noimg') === '1'
+    if (bRemoveNoImg) $target.find(NO_IMG_SELECTOR).each(eachRemoveNoImgCls)
+
+    /** 공통 옵션 */
+    const defaultOpts = {
+      // s: 220822 최적화 관련 이미지 lazy 로드 추가 요청 반영
+      lazy: {
+        checkInView: true,
+        loadOnTransitionStart: true
+      },
+      watchSlidesProgress: true,
+      on: {
+        destroy: () => {
+          if (isMobile) return
+          // only INK
+          $target.off('focusin.swiper focusout.swiper')
+        },
+        afterInit: swiper => {
+          // kbbfn="s3-image" - swiper loop, slide-duplicate 오류 방어코드(2)
+          if (!KbbJS.getOption('swiper.removeNoImg.afterInit', true)) return
+          const nDelay = KbbJS.getOption('swiper.removeNoImg.delay', 50)
+          setTimeout(() => {
+            const $cont = $(swiper.$el[0])
+            $cont.find(`${NO_IMG_SELECTOR}[src]`).each(eachRemoveNoImgCls)
+          }, nDelay)
+        }
+      },
+      // KbbJS 운용 conflict 옵션 추가
+      conflict
+    }
+
+    /** 디바이스별 옵션 */
+    const viewOpts = !isMobile
+      // INK
+      ? {
+          watchSlidesVisibility: true,
+          keyboard: false
+        }
+      // MOK
+      : {
+          containerModifierClass: 'swiper-'
+        }
+
+    /** 스와이퍼 초기화 파라메터 */
+    const options = Object.assign(...[
+      defaultOpts,
+      viewOpts,
+      userOpts
+    ])
+
+    /** 중복옵션 분기 */
+    if (options.conflict === false) {
+      // const swiper = $target[0].swiper
+      const swiper = container.swiper
+      if (KbbJS.getUrlParam('swiper-conflict') === '0') {
+        console.warn('-- swiper conflict init pass --', container)
+      }
+      if (swiper) return swiper
+    }
+
+    // INK
+    if (!isMobile) {
+      $target
+        .on('focusin.swiper', function () {
+          this.swiper.keyboard.enable()
+        })
+        .on('focusout.swiper', function () {
+          this.swiper.keyboard.disable()
+        })
+    }
+
+    const instance = new Swiper(container, options)
+    const $swiperEl = instance.$el
+    // if (!instance.originalParams.loop) {
+    //   return instance
+    // }
+
+    if ($swiperEl == null || !$swiperEl.length) {
+      return instance
+    }
+
+    return instance
+  }
+}())

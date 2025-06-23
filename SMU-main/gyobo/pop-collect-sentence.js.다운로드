@@ -1,0 +1,21 @@
+/* eslint-disable no-var */
+/* globals KbbJS */
+
+/**
+ * [통합] 문장수집 작성 팝업
+ */
+;(function (ResName) {
+  KbbJS.setOption('plugins.ui-pop-collect-sentence', {
+    dependOn: [ResName.KBB_CM_SCRIPT],
+    pid: KbbJS.getOption('plugins.ui-product.pid'),
+    combiSaleCode: KbbJS.getOption('plugins.ui-product.combiSaleCode'),
+    elements: {
+      root: '#popKillingPartEdit',
+      submit: '.dialog_footer .btn_primary',
+      textArea: '#textKillingPart',
+      input: '#inputPageNumber',
+      count: '.byte_check_wrap .byte_check .count',
+      close: '.btn_dialog_close'
+    }
+  })
+})(KbbJS.getOption('resource.names'))

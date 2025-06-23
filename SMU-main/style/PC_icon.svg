@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="사각형_22091" data-name="사각형 22091" width="11.633" height="14.183" fill="none"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <circle id="타원_655" data-name="타원 655" cx="25" cy="25" r="25" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="큐봇_icon" data-name="큐봇 icon" transform="translate(-180)">
+    <circle id="타원_654" data-name="타원 654" cx="24.583" cy="24.583" r="24.583" transform="translate(180.417 0.417)" fill="#5055b1"/>
+    <g id="그룹_52456" data-name="그룹 52456" transform="translate(200.617 5.483)" clip-path="url(#clip-path)">
+      <path id="패스_41660" data-name="패스 41660" d="M1772.814,490.03c-.083.233-.016.267.15.083l2.75-3.233-1.5-.85-1.4,4.017Z" transform="translate(-1771.365 -476.047)" fill="#fff"/>
+      <path id="패스_41661" data-name="패스 41661" d="M1783.387,483.512l-3-1.717-3-1.717a.372.372,0,0,0-.5.133l-.25.433a.372.372,0,0,0,.133.5l.817.467L1775.07,486a3.638,3.638,0,0,0-3.15,1.767l3.05,1.75,1.484.85,3.05,1.75a3.652,3.652,0,0,0-.067-3.6l2.517-4.383.817.467a.372.372,0,0,0,.5-.133l.25-.433a.372.372,0,0,0-.133-.5" transform="translate(-1771.937 -480.046)" fill="#fff"/>
+    </g>
+    <g id="그룹_52457" data-name="그룹 52457" transform="translate(180)" clip-path="url(#clip-path-2)">
+      <rect id="사각형_22092" data-name="사각형 22092" width="43.333" height="50" rx="20" transform="translate(3.333 20.45)" fill="#fff"/>
+    </g>
+    <rect id="사각형_22093" data-name="사각형 22093" width="28" height="12" rx="6" transform="translate(190.867 31)" fill="#eaeaea"/>
+    <rect id="사각형_22094" data-name="사각형 22094" width="2.333" height="4" rx="1.167" transform="translate(197.666 35)"/>
+    <rect id="사각형_22095" data-name="사각형 22095" width="2.333" height="4" rx="1.167" transform="translate(209.867 35)"/>
+    <g id="타원_231" data-name="타원 231" transform="translate(180)" fill="none" stroke="#ccc" stroke-width="1">
+      <circle cx="25" cy="25" r="25" stroke="none"/>
+      <circle cx="25" cy="25" r="24.5" fill="none"/>
+    </g>
+  </g>
+</svg>

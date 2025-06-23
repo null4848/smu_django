@@ -1,0 +1,1748 @@
+/* eslint-disable no-var */
+/* globals KbbJS, NetFunnel */
+
+/**
+ * [공통] 페이지 변수 정의 스크립트
+ * - 모든 서비스 화면에 공통적으로 사용되는 변수들을 이 파일에서 정의하여 사용
+ * - ex) ga, ga360 id, kakao-api key, .. 등
+ */
+
+// TODO: remove debug log
+// console.log('* [loaded] /CDN/js/common-vars.js')
+
+// NetFunnel_Action
+window.NetFunnel && NetFunnel.initActionList('olje', [
+  'S000200066349',
+  'S000200066339',
+  'S000200066342',
+  'S000200066344',
+  'S000200066347'
+])
+
+/**
+ * API ResultCode 정의
+ */
+KbbJS.setOption('api.result.code', { success: '000000' })
+
+/**
+ * API URLS
+ */
+KbbJS.setOption('api.urls', {
+  // 웰컴: 광고센터
+  adv: '/adv',
+  // 주소검색(통합검색 ASIS API)
+  addr: { search: '/search' }
+})
+
+/**
+ * API ----- [백오피스: BO] -----
+ */
+KbbJS.setOption('api.urls.bo', {
+  terms: '/annnmngm/terms/cstm'
+})
+
+/**
+ * API ----- [공통] -----
+ */
+KbbJS.setOption('api.urls.common', {
+  // 댓글
+  reply: {
+    // 댓글 등록
+    add: '/reply/add',
+    // 댓글 수정
+    modify: '/reply/modify',
+    // 댓글 목록 조회
+    list: '/reply/list',
+    // 대댓글 목록 조회(by id)
+    listByIdnf: '/reply/list-by-idnf_num_list',
+    // 댓글 삭제
+    delete: '/reply/delete'
+  },
+  // 문장수집
+  sentence: {
+    // 문장수집 등록
+    add: '/sentence/add',
+    // 문장수집 수정
+    modify: '/sentence/modify',
+    // 문장수집 목록 조회
+    list: '/sentence/list',
+    // 문장수집 삭제
+    remove: '/sentence/remove',
+    // 베스트 문장수집 목록 조회
+    bestList: '/api/onk/total/selectSentence',
+    // 마이룸 찜한 문장수집 목록 조회
+    myWishList: '/sentence/myWishList',
+    // 30일동안 작성된 문장수집 횟수
+    sentMonthCnt: '/sentence/sentMonthCnt'
+  },
+  // 전시/서비스 공통
+  exhib: {
+    // 서비스 LNB 획득
+    svrlnb: '/exhib/service/lnb',
+    // 카테고리 LNB 획득
+    catglnb: '/exhib/category/lnb',
+    // 서비스 메뉴 획득
+    svrMenu: '/exhib/service/svrmenu',
+    // 상품 리스트 획득
+    recentList: '/api/exhib/service/recentList',
+    // 즐겨찾기 목록
+    menu: '/api/exhib/bookmark',
+    // 즐겨찾기 추가
+    addMenu: '/api/exhib/insertBookmark',
+    // 즐겨찾기 삭제
+    deleteMenu: '/api/exhib/deleteBookmark',
+    // 단골매장 정보 가져오기
+    getCustomer: '/api/exhib/getCustomer',
+    // 장바구니 개수 가져오기
+    getCartSize: '/api/exhib/getCartSize'
+  },
+  // 전시/서비스 엑셀 다운
+  excel: {
+    // 오늘의 책
+    today: '/api/excel/today',
+    // 정가/특가
+    special: '/api/excel/special',
+    // 쇼케이스
+    showcase: '/api/excel/showcase'
+  },
+  mobidooToken: '/api/mobidoo/token'
+})
+
+/**
+ * API ----- [공통: 클로버 리뷰] -----
+ */
+KbbJS.setOption('api.urls.review', {
+  // klover 리뷰 등록
+  add: '/add',
+  // klover 리뷰 수정
+  update: '/modify',
+  // klover 리뷰 목록 조회
+  list: '/list',
+  // klover 리뷰 삭제
+  delete: '/delete',
+  // klover 리뷰 상세 조회
+  detail: '/detail',
+  // klover 리뷰 통계
+  statistics: '/statistics',
+  // 감성태그 목록 조회
+  emotionTags: '/emotionTags'
+})
+
+/**
+ * API ----- [공통: 댓글] -----
+ */
+KbbJS.setOption('api.urls.reply', {
+  // 댓글 등록
+  add: '/add',
+  // 댓글 수정
+  update: '/modify',
+  // 댓글 목록 조회
+  list: '/list',
+  // 대댓글 목록 조회(by id)
+  listByIdnf: '/list-by-idnf_num_list',
+  // 댓글 삭제
+  delete: '/delete'
+})
+
+/**
+ * API ----- [인증: AUTH] -----
+ */
+KbbJS.setOption('api.urls.auth', {
+  verify: '/verify',
+  reissue: '/reissue',
+  login: {
+    id: '/login',
+    sns: '/sns-login',
+    simple: '/simple-login',
+    emnmLogin: '/emnm-login',
+    bioLogin: '/bio-login'
+  },
+  logout: '/logout',
+  user: '/user'
+})
+
+/**
+ * API ----- [회원: MBR] -----
+ */
+KbbJS.setOption('api.urls.mbr', {
+  join: {
+    // 본인인증 회원가입완료 (API-BIZ10-03-I010)
+    crrt: '/mmbr-acnt/crtt-join',
+    // 간편가입 회원가입완료 (API-BIZ10-03-I043)
+    cmn: '/mmbr-acnt/cmn-join',
+    // 아이디만들기 (API-BIZ10-03-I051)
+    createId: '/mmbr-acnt/create-id',
+    // 법인회원가입 (API-BIZ10-03-I061)
+    cnpr: '/mmbr-acnt/mmbr-join-cnpr',
+    // 회원 SNS가입 중복 체크 (API-BIZ10-03-I001)
+    snsDup: '/mmbr-acnt/sns-dup',
+    // SNS간편가입 (API-BIZ10-03-I049)
+    snsJoin: 'mmbr-acnt/mmbr-sns-join',
+    // 4대 정보 기준 기존 가입 정보 조회 (API-BIZ10-03-I032)
+    searchHp: '/mmbr-acnt/search-id/hp',
+    // 회원 이메일주소 중복 체크 (API-BIZ10-03-I066)
+    emailDup: '/mmbr-acnt/email-dup',
+    // 휴대전화 전화번호 중복 체크 (API-BIZ10-03-I012)
+    phoneDup: '/mmbr-acnt/hp-dup',
+    // 임직원 아이디 연동 (API-BIZ10-01-I020)
+    emnmJoin: '/mmbr-acnt/emnm-join',
+    // 정상, 탈퇴, 휴면 계정에서 회원아이디 중복 체크 (API-BIZ10-03-I030)
+    idAllDup: '/mmbr-acnt/id-all-dup/',
+    // 기존회원
+    existMmbrInfo: '/mmbr-acnt/exist-mmbr-info'
+  },
+  dorm: {
+    // 휴면계정 복원처리 (API-BIZ10-01-I011 , API-BIZ10-01-I012 )
+    restore: '/mmbr-dorm/restore-crtt',
+    cancelPoint: '/mmbr-dorm/cancel-point'
+  },
+  adult: {
+    mmbrcert: '/mmbrcert/adlt-crtt'
+  },
+  loginInfo: {
+    // 90일 비밀번호 체크
+    passwdDay: '/passwd-day'
+  },
+  login: {
+    // 회원 로그인 정보 관리 (API-BIZ10-04-I024)
+    loginHistory: '/login/login-history'
+  },
+  memberInfo: {
+    sertnum: '/mmbrinfo/mmbr-sertnum',
+    // 교보북클럽 카드 목록 조회 (API-BIZ10-05-I001)
+    bookClubCardList: '/mmbrinfo/book-club-card-list/',
+    // 교보북클럽 사용중지, 해지, 사용중지 취소 처리 (API-BIZ10-05-I002)
+    bookClubCardLosscancel: '/mmbrinfo/book-club-card-losscancel',
+    // 교보북클럽 카드 등록 처리 (API-BIZ10-05-I005)
+    bookClubCardReg: '/mmbrinfo/book-club-card-reg',
+    // 교보북클럽 대표카드 설정/해제 처리 (API-BIZ10-05-I012)
+    bookClubCardRprs: '/mmbrinfo/book-club-card-rprs',
+    // 회원정보(개인/법인) 상세조회 (API-BIZ10-04-I030)
+    mmbrInfo: '/mmbrinfo/mmbr-info/',
+    // 회원정보(개인/법인) 회원 연락처 정보 수정 (API-BIZ10-04-I004)
+    mmbrCnpl: '/mmbrinfo/mmbr-cnpl',
+    // 회원정보(개인/법인) 수정 (API-BIZ10-04-I031)
+    mmbrInfoD: '/mmbrinfo/mmbr-info-d',
+    // 회원정보(개인/법인) 개명신청 처리 (API-BIZ10-04-I015, API-BIZ10-04-I016)
+    mmbrRename: '/mmbrinfo/mmbr-rename',
+    // 회원모바일등록정보조회 (API-BIZ10-04-I034)
+    mobileInfo: '/mmbrinfo/mobile-info',
+    // 회원모바일등록정보 간편비밀번호/생체인증 사용 설정 (API-BIZ10-04-I035)
+    mobileSmeasyLgnY: '/mmbrinfo/mobile-smeasyLgnY',
+    // 회원모바일등록정보 간편비밀번호/생체인증 해제 설정 (API-BIZ10-04-I037)
+    mobileSmeasyLgnN: '/mmbrinfo/mobile-smeasyLgnN',
+    // 회원모바일등록정보 간편로그인비밀번호 변경 (API-BIZ10-04-I043)
+    mobileSertnum: '/mmbrinfo/mobile-sertnum'
+  },
+  // 회원 확인
+  confirm: {
+    // 이메일 소유인증 번호 발송/재발송 (API-BIZ10-03-I023)
+    email: '/send/email',
+    // 패스워드 찾기 시 이메일 소유인증 번호 발송/재발송 (API-BIZ10-02-I011)
+    emailPw: '/send/email-pw',
+    // 핸드폰 소유인증 번호 발송/재발송 (API-BIZ10-03-I037)
+    mobile: '/send/mobile',
+    // 패스워드 찾기 시 휴대폰 소유인증 번호 발송/재발송 (API-BIZ10-02-I008)
+    mobilePw: '/send/mobile-pw',
+    // 휴대폰 소유인증 번호 확인 (API-BIZ10-03-I063)
+    validMobile: '/valid/mobile',
+    // 이메일 소유인증 번호 확인 (API-BIZ10-03-I065)
+    validEmail: '/valid/email'
+  },
+  find: {
+    // 법인회원 아이디 찾기 (API-BIZ10-02-I003)
+    corp: '/find-id/corp',
+    // 본인인증으로 아이디 찾기 (API-BIZ10-02-I004)
+    crtt: '/find-id/crtt',
+    // 이메일로 아이디 찾기 (API-BIZ10-02-I002)
+    email: '/find-id/email',
+    // 휴대폰으로 아이디 찾기 (API-BIZ10-02-I001)
+    hp: '/find-id/hp',
+    // 회원 번호로 ci 찾기
+    user: '/find-id/mmbr-ci',
+    // 회원 번호로 ci 찾기 (API-BIZ10-07-I001)
+    mmbrCi: '/find-id/mmbr-ci/',
+    // 본인인증으로 패스워드 찾기 (API-BIZ10-02-I017)
+    pwCrtt: '/find-pw/crtt',
+    // 아이디로 회원번호 조회 (API-BIZ10-02-I026)
+    num: '/find-num'
+  },
+  mmbrcert: {
+    // 해외거주회원 인증 접수내역 조회 (API-BIZ10-04-I017)
+    frngCrttInfo: '/mmbrcert/frng-crtt-info/',
+    // 해외거주회원 인증 접수내역 저장 (API-BIZ10-04-I019)
+    frngCrttReq: '/mmbrcert/frng-crtt-req',
+    // 일반회원 본인인증 등록 (API-BIZ10-01-I023)
+    selfCrttMmbr: '/mmbrcert/self-crtt/mmbr',
+    // 법인회원 본인인증 등록 (API-BIZ10-01-I024)
+    selfCrttCprn: '/mmbrcert/self-crtt/cprn',
+    // 미성년자 보호자인증 등록 (API-BIZ10-03-I013)
+    selfCrttMinr: '/mmbrcert/self-crtt/minr'
+  },
+  mmbrAcnt: {
+    // 회원번호로 SNS 연동 정보 조회 (API-BIZ10-04-I021)
+    mmbrSnsGet: '/mmbr-acnt/mmbr-sns-get',
+    // 회원번호로 SNS 연동 (API-BIZ10-04-I022)
+    mmbrSnsLnkg: '/mmbr-acnt/mmbr-sns-lnkg',
+    // 회원번호로 SNS 연동 해제 (API-BIZ10-04-I023)
+    mmbrSnsDisconn: '/mmbr-acnt/mmbr-sns-disconn'
+  },
+  mmbrcfg: {
+    // 마케팅수신 및 정보제공 동의 조회 (API-BIZ10-04-I026)
+    mktgThprInfo: '/mmbrcfg/mktg-thpr-info/',
+    // 마케팅수신 동의 내역 저장 (API-BIZ10-04-I027)
+    mktgChnlSave: '/mmbrcfg/mktg-chnl-save',
+    // 제3자 정보제공 동의 조회(API-BIZ10-04-I046)
+    mmbrGivenInfo: '/mmbr-given-info/',
+    // 제3자정보제공 동의 내역 저장 (API-BIZ10-04-I044)
+    thprChnlSave: '/mmbrcfg/thpr-chnl-save'
+  },
+  mmbrgrade: {
+    // 회원등급산정반영금액 (API-BIZ10-05-I008)
+    gradeAmount: '/mmbrgrade/grade-amount'
+  },
+  exclmmbrgrade: {
+    // Prestige 등급 조회 (API-BIZ10-05-I010)
+    gradeInfo: '/exclmmbrgrade/grade-info/'
+  },
+  wdrl: {
+    // 회원탈퇴 처리 (API-BIZ10-04-I029)
+    wdrlProc: '/wdrl/wdrl-proc'
+  },
+  // 비밀번호 확인 (API-BIZ10-04-I001)
+  pwCheck: '/pw-check',
+  // 회원정보 상세조회
+  info: '/mmbrinfo/mmbr-info',
+  // 비밀번호 변경일 90일 연장 (API-BIZ10-01-I027)
+  sertNumPrd: 'sertNumPrd',
+  // 자체 API(외부 연계)
+  extrn: {
+    evp: {
+      // 회원 쿠폰 발급
+      couponsIssue: '/extrn/evp/coupons/issue'
+    },
+    orp: {
+      // 우편번호 배송 기일
+      responseShipment: '/extrn/orp/external/delivery/response-shipment'
+    },
+    tocsoda: {
+      // 톡소다 서비스 해지
+      withdraw: '/extrn/tocsoda/withdraw'
+    },
+    mep: {
+      // 일반 제휴 카드 등록
+      normalCard: '/extrn/mep/mmbrcard/nomal-card'
+    }
+  }
+})
+
+/**
+ * API ----- [웰컴: ONK] -----
+ */
+KbbJS.setOption('api.urls.onk', {
+  welcome: {
+    mainBanner: '/welcome/banner',
+    // 푸터 공지사항
+    notice: '/welcome/notice',
+    // 푸터 당첨자발표
+    winner: '/welcome/winner',
+    // 베스트셀러
+    best: '/welcome/best',
+    // 히트
+    hit: '/welcome/hit',
+    // MD추천도서
+    md: '/welcome/md'
+  },
+  wingbanner: '/banner/wing',
+  picks: {
+    // 키워드 pick 데이터 조회
+    keyword: '/picks/keyword',
+    // 내 맘대로 pick 카테고리 조회
+    category: '/picks/categorys',
+    // 내 맘대로 pick 시/도 조회
+    sido: '/picks/regional_si',
+    // 내 맘대로 pick 시/군/구 조회
+    sigungu: '/picks/regional_gun',
+    // 내 맘대로 pick 조회
+    myway: '/picks/myway',
+    // 마이 pick 조회
+    mypicks: '/picks/my-picks',
+    // 소울 pick 조회
+    soulmate: '/picks/soulmate',
+    // 종합추천 pick 조회
+    comprehensive: '/picks/comprehensive',
+    // 작가 pick 조회
+    writer: '/picks/writer',
+    // 평가늘리기 리스트 조회
+    valuation: '/picks/valuation'
+  },
+  // 우리가 만드는 책
+  booksurvey: {
+    // 우리가 만드는 책 설문 목록
+    survey: '/make/servey',
+    // 우리가 만드는 책 출간된 도서 목록
+    published: '/make/published',
+    // 우리가 만드는 책 투표(API-BIZ15-17-I005)
+    voting: '/make/servey/voting',
+    // 우리가 만드는 책 투표 API
+    vote: 'booksurvey/vote'
+  },
+  // 분철 서비스 목록 조회
+  spring: '/spring/book',
+  // 선물하기 목록 조회
+  present: {
+    list: '/gift',
+    best: '/api/present/best'
+  },
+  // 고객혜택
+  benefit: {
+    // 고객혜택 쿠폰북 리스트
+    couponBookList: '/benefit/selectCouponBookList',
+    // 쿠폰북 쿠폰 다운로드(API-BIZ15-23-I007)
+    couponDownload: '/benefit/couponDownload',
+    // 리스트 할인쿠폰 적용상품보기(API-BIZ15-23-I002)
+    selectListProduct: '/benefit/selectListProduct',
+    // 골든타임 e교환권 다운로드 (API-BIZ15-23-I009)
+    goldenTimeRegist: '/benefit/goldenTimeRegist',
+    // 오늘의 미션혜택 체크
+    checkTodayMissionNow: '/benefit/checkTodayMissionNow',
+    // 오늘의 미션 참여
+    todayMissioRegist: '/benefit/todayMissioRegist',
+    // 오늘의 미션 (Picks 개인화 추천 평가늘리기, 오늘의 유튜브 영상 보기) 참여이력 저장 (API-BIZ15-23-I012)
+    todayRegist: '/benefit/todayRegist',
+    // 북모닝 이용권 쿠폰 조회 (프레스티지 회원)
+    getBookMorningCoupon: '/benefit/bookMorning/coupon'
+  },
+  // 인물&작품
+  author: {
+    // 인물&작품 메인 상세 목록
+    main: '/author/main',
+    // 분야별 인물 목록
+    writers: '/author/writers',
+    // 수상자 목록
+    award: '/author/award',
+    // 인물 작품 목록
+    product: '/author/product',
+    // 인물 상세
+    info: '/author/information',
+    // 인물 인터뷰 배너
+    interview: '/author/interview',
+    // 인물 인터뷰
+    interviews: '/author/interviews',
+    // 인물 검색 리스트(
+    search: '/author/search'
+  },
+  // 사은품 리스트 조회
+  promotion: '/promotion/selectGiftList',
+  // 문화공간
+  culture: {
+    /** 문화공간 메인 베스트컨텐츠 조회 (API-BIZ15-18-I001) **/
+    mainBest: '/cultural-space', // Authorization
+    /** 문화공간 메인 문화콘텐츠 조회 (API-BIZ15-18-I003) **/
+    mainContent: '/cultural-space/main', // Authorization
+    /** 강연공연 조회 **/
+    letcure: '/cultural-space/letcure', // Authorization
+    /** 여행체험 조회 **/
+    travel: '/cultural-space/travel', // Authorization
+    /** 전시 조회 **/
+    exhibition: '/cultural-space/exhibition', // Authorization
+    /** 캘린더 조회 **/
+    calendar: '/cultural-space/calendar'
+  },
+  /** 스펙비교 API */
+  specVerse: {
+    /** 스펙비교 후 */
+    compareAfter: '/versus/comparison',
+    /** 스펙 자동추천 */
+    outoSpec: '/versus/spec'
+  },
+  /** 고객센터 API **/
+  cscenter: {
+    noticeList: 'cscenter/notice/list',
+    noticeDetail: 'cscenter/notice/detail',
+    noticeSideNum: 'cscenter/notice/sideNum',
+    ars: 'cscenter/ars',
+    faq: 'cscenter/faq',
+    status: 'cscenter/status'
+  },
+  /** 협력사여러분 API **/
+  customer: {
+    selectPublishSearchList: 'customer/selectPublishSearchList',
+    selectChargePersonList: 'customer/selectPersonList',
+    suggestCategory: 'customer/suggest/category',
+    insertSuggest: 'customer/suggest'
+  },
+  // 약관 조회
+  contents: '/contents/getContents',
+  /** 매장안내 **/
+  store: {
+    /** 매장안내 메인 배너 (API-BIZ15-01-I011) **/
+    mainBanner: '/store/banner',
+    /** 매장안내 이벤트&공지사항 (API-BIZ16-03-I-008) **/
+    event: 'store-information/event',
+    /** 매장안내 매장 기본 정보 표시 (API-BIZ16-03-I-001) **/
+    storeSearch: '/store-information/store-search',
+    /** 매장안내 매장 맵(위치)정보 조회 (API-BIZ16-03-I-004) **/
+    mapInfo: '/store-information/MapInfo',
+    /** 매장안내 매장찾기 뉴스티커 (API-BIZ16-03-I003) **/
+    news: '/store-information/news',
+    /** 매장안내 오시는길 (API-BIZ16-03-I-006) **/
+    directions: '/store-information/directions',
+    /** 매장안내 내부 안내도 (API-BIZ16-03-I-007) */
+    insideGuid: '/store-information/inside-guide',
+    /** 매장안내 스탬프 목록조회 (API-BIZ16-01-I002) **/
+    stampSearch: '/store-information/stamp',
+    /** 매장안내 스탬프 기본정보 조회 (API-BIZ16-01-I001) **/
+    stampBasic: '/store-information/stamp-basic-info',
+    /** 구매내역 조회 (API-BIZ16-01-I003) **/
+    stampList: '/store-information/stampList',
+    /** 매장안내 스탬프 혜택지급(API-BIZ16-01-I004) **/
+    stampBenefit: '/store-information/stamp-benefit',
+    /** 매장안내 스탬프 쿠폰 사용(API-BIZ16-01-I005) */
+    couponUpdate: '/store-information/couponUpdate',
+    /** 매장안내 근처 매장 조회 (API-BIZ16-01-I-005) **/
+    nearby: '/store-information/nearby-store',
+    /** 매장안내 My매장 (API-BIZ16-03-I002) **/
+    updMyStore: '/store-information/my-store',
+    /** 매장안내 지역별 매장정보 조회 (API-BIZ16-04-I-003) **/
+    selectStoreList: '/store-information/selectStoreList',
+    /** 매장 안내 체크인 여부 확인 (API-BIZ16-06-I011) */
+    checkinVerify: '/store-information/checkin-verify',
+    /** 매장안내 체크인 (API-BIZ16-03-I-015) **/
+    checkinSite: '/store-information/checkin-site',
+    /** 매장안내 쿠폰 다운 (API-BIZ16-04-I-007) **/
+    getCoupon: '/store-information/getCoupon',
+    /** 쿠폰발급이력조회 (API-BIZ16-04-I-020) **/
+    couponHistory: '/store-information/select-coupon-history',
+    /** 매장안내 쿠폰 사용 (API-BIZ16-04-I-006) */
+    couponUse: '/store-information/coupon-use',
+    /** 매장안내 매장 인스타그램 계정 정보 조회 (API-BIZ16-03-I009) */
+    instagram: '/store-information/instagram',
+    /** 매장안내 매장시설 조회 (API-BIZ16-03-I013) */
+    facility: '/store-information/facility',
+    /** POS 스마트영수증 수정 (ORP) */
+    smartReceipt: '/store/smart-receipt',
+    /** 점포별 베스트 셀러 (API-BIZ16-06-I006) */
+    selectBestSeller: '/store/selectBestSeller',
+    /** 요즘 이책 (API-BIZ16-06-I005) */
+    selectRecentBook: '/store/selectRecentBook',
+    /** 매장안내 이벤트&공지사항 (API-BIZ16-03-I-008) */
+    getStoreInfoEvent: '/store/getStoreInfoEvent',
+    /** 매장안내 추천도서리스트 조회 (API-BIZ16-04-I-005) */
+    getRecommendedBookList: '/store-information/selectRecommendedBookList',
+    /** 매장 도서 위치 조회 (API-BIZ16-06-I004) */
+    bookLocation: '/store-information/book-location',
+    /** 매장 보유도서 리스트 조회 */
+    selectStoreProdList: '/api/store/selectStoreProdList',
+    /** 인기 키워드 (API-BIZ16-06-I009) */
+    selectHotKeyord: '/api/store/selectHotKeyord',
+    /** 점포별 베스트 셀러 (API-BIZ16-06-I006)  */
+    bestSeller: '/store-information/best-seller',
+    /** 점포 서비스 정보 (API-BIZ16-06-I007)  */
+    serviceCode: '/store-information/service-code',
+    /** 점포 지역 그룹 (API-BIZ16-06-I008)  */
+    areaCode: '/store-information/area-code',
+    /** 점포 기본 정보 조회 (API-BIZ16-06-I006)  */
+    basic: '/store-information/basic',
+    /** 요즘 이책 (API-BIZ16-06-I007)  */
+    recentlyHot: '/store-information/recently-hot',
+    /** 매장 안내 배너 정보 조회 (API-BIZ16-06-I010)  */
+    banner: '/store-information/banner',
+    /** 매장안내 My매장 (API-BIZ16-03-I-002)  */
+    myStore: '/store-information/my-store'
+  },
+  /** 손글쓰기 캠페인 API **/
+  handwriting: {
+    campaign: 'handwriting/campaign',
+    /** 손글쓰기 대회 응모내역 **/
+    contestEntry: 'handwriting/contest/entry',
+    /** 손글쓰기 대회 고객투표, 수상자발표, 수상작전시 내역 **/
+    contestWnprList: 'handwriting/contest/wnpr',
+    /** 손글쓰기 대회 문장 출처 베스트 도서 내역 **/
+    contestBestBookList: 'handwriting/contest/wnpr/best-book',
+    /** 손글쓰기 대회 투표하기 **/
+    contestCustomerVote: 'handwriting/contest/customer-vote/vote',
+    /** 손글쓰기 스타 응모(참여)내역 **/
+    starPtcp: 'handwriting/star/ptcp',
+    /** 손글쓰기 스타 응모하기 **/
+    starApply: 'handwriting/star/apply',
+    /** 손글쓰기 스타 추천하기 **/
+    starRcmn: 'handwriting/star/rcmn',
+    /** 손글쓰기 대회 응모 확인 */
+    entryCheck: 'handwriting/contest/entry-check',
+    /** 손글쓰기 스토리 리스트 조회 */
+    story: 'handwriting/story',
+    /** 손글쓰기 스토리 최신 게시글 조회 */
+    storyNew: 'handwriting/story/new'
+  }
+})
+
+/**
+ * API ----- [상품: PDT] -----
+ */
+KbbJS.setOption('api.urls.pdt', {
+  // 서비스 LNB 획득 (API-BIZ15-01-I013)
+  svcLnb: '/category/svc/lnb',
+  // 전시상품 레이아웃 조회 (API-BIZ15-01-I002)
+  layout: '/category/display/layout',
+  detail: '/product',
+  order: {
+    shipping: 'product/{PID}/shipping'
+  },
+  pod: {
+    notice: {
+      // 공지사항 리스트 조회
+      list: '/pod/notice',
+      // 공지사항 리스트 검색 조회
+      search: '/pod/notice/search'
+    },
+    // POD 베스트 목록 조회
+    best: '/pod/best',
+    // POD 도서 목록 조회
+    book: '/pod/book',
+    podExcel: '/api/excel/podExcel'
+  },
+  sentences: {
+    add: '/sentences/addReview',
+    modify: '/sentences/modifyReview',
+    list: '/sentences/list',
+    delete: '/sentences/removeReview'
+  },
+  daily: {
+    // 오늘의 책 리스트
+    today: '/today'
+  },
+  // 책 그리고 꽃
+  booknflower: {
+    // 리뷰 목록 조회
+    reviewList: '/flower/selectReviewList',
+    // md 추천도서 목록 조회
+    mdList: '/flower/selectBestSellerList'
+  },
+  // 정가인하/특가
+  price: {
+    // 정가인하
+    rePrice: {
+      // 정가인하 도서 리스트 조회
+      list: '/special-price/RegularBooklist',
+      // 정가인하 컬처 리스트 조회
+      culture: '/special-price/RegularCultureList',
+      // 정가인하 교보문구 리스트 조회
+      pbProduct: '/special-price/RegularPBproductList',
+      // 정가인하 추천도서
+      recommend: '/special-price/reRecommend'
+    },
+    // 특가
+    specialPrice: {
+      // 특가 도서 리스트 조회
+      list: '/special-price/SpecialBooklist',
+      // 특가 컬처 리스트 조회
+      culture: '/special-price/SpecialCultureList',
+      // 특가 교보문구 리스트 조회
+      pbProduct: '/special-price/SpecialPBproductList',
+      // 특가 추천도서
+      recommend: '/special-price/spRecommend'
+    },
+    // 정가/특가 엑셀 다운
+    excel: '/special-price/excel'
+  },
+  // 베스트셀러
+  best: {
+    // 종합 베스트 조회
+    total: '/best-seller/total',
+    // 온라인 베스트 조회
+    online: '/best-seller/online',
+    // 실시간 베스트 조회
+    realtime: '/best-seller/realtime',
+    // 매장별 베스트 조회
+    store: '/best-seller/store-products',
+    // 연령대 베스트 조회
+    age: '/best-seller/age-group-products',
+    // 특가 베스트 조회
+    sale: '/best-seller/bargain-price-products',
+    // 연도별 베스트 조회
+    years: '/best-seller/year',
+    // 인물 베스트 조회
+    person: '/best-seller/author',
+    // 스테디셀러 조회
+    steady: '/best-seller/steady',
+    // 엑셀 다운로드
+    excel: '/best-seller/excel',
+    // 목록 보기 유형 조회
+    ymw: '/best-seller/online-date'
+  },
+  // 신상품
+  newest: {
+    // 도서 화제의 신상품(주목할 신상품)
+    selectNewList: '/newest/selectNewList',
+    // 도서 화제의 신상품 주차 조회
+    selectNewListDate: '/newest/selectNewListDate',
+    // 도서 예약 판매 상품
+    selectReserveList: '/newest/selectReserveList',
+    // 도서 새로 나온 상품
+    newProduct: '/newest/selectNewProductList',
+    // 문화서비스 > 화제의 신상품
+    selectCultureList: '/newest/selectCultureList',
+    // 문화서비스 예약판매 상품
+    cultureReserveList: '/newest/selectCultureReserveList',
+    // 문화서비스 새로나온 상품
+    selectNewCultureList: '/newest/selectNewCultureList',
+    // 교보 only > 화제의 신상품
+    selectPBproductList: '/newest/selectPBproductList',
+    // 교보 only >예약판매 상품
+    selectPBreserveList: 'newest/selectPBreserveList',
+    // 교보 only >새로나온 상품
+    selectNewPBproductList: 'newest/selectNewPBproductList',
+    // 신상품 LNB list 조회 (API-BIZ15-04-I010)
+    selectNewLnb: '/newest/selectNewLnb',
+    // 엑셀 다운로드
+    newestExcel: '/api/excel/newestExcel'
+  },
+  // 상품 목록
+  showcase: {
+    // 전체보기
+    all: '/category/all',
+    // 신상품
+    new: '/category/new',
+    // 베스트셀러
+    // best: '/category/best',
+    best: '/best-seller/online',
+    // Casting
+    cast: '/category/casting',
+    // 회원리뷰
+    review: '/category/review',
+    // 미리보기
+    preview: '/category/preview',
+    banner: '/banner',
+    // 엑셀 다운
+    excel: '/category/excelDownload',
+    // 교보Only
+    kyoall: '/category/selectTabKonlyAll',
+    // 신상품
+    kyonew: '/category/selectTabKonlyNew',
+    // Casting
+    kyocast: '/category/selectTabKonlyCasting',
+    // 회원리뷰
+    kyoreview: '/category/selectTabKonlyReview',
+    // 미리보기
+    kyopreview: '/category/selectTabKonlyPreview',
+    // 컬처 지난행사
+    closedCultureEvent: '/category/closed-culture-event'
+  },
+  publishing: {
+    excel: '/publishing/excel',
+    selectPublishingList: '/publishing/products'
+  },
+  // 임시 광고센터 api
+  adv: '/banner/advertising',
+  // 상품 리스트 조회
+  productList: '/category',
+  // 특정 고객 팝업
+  cppup: '/banner/cppup',
+
+  // 추천도서
+  recommend: {
+    // 추천 category(API-BIZ15-25-I006)
+    category: '/recommand/category',
+    // 추천 분야 도서
+    categoryBooks: '/recommand/category/books',
+    // 추천 도서 엑셀 다운로드
+    excel: '/api/excel/recommand',
+    // 추천 Lnb
+    lnb: '/recommand/lnb',
+    // 추천 메인 미디어 추천 도서
+    mainBooks: '/recommand/main/books',
+    // 추천 메인 원서 vs 번역서 추천 도서
+    mainForeign: '/recommand/main/foreign'
+    // 추천 메인 오늘의 책 & 화제의 신상 목록
+  },
+  // AR지수
+  arGrade: {
+    // AR지수 목록 (API-BIZ15-03-I001)
+    gradeLevelBooks: '/grade-level/books',
+    // AR지수 목록 엑셀 다운로드(API-BIZ15-03-I001)
+    gradeExcelDown: '/api/excel/grade-level'
+  },
+  baroDrim: {
+    // 바로드림 구매이력 여부 (API-BIZ16-05-I-004)
+    checkFirst: '/barodream/checkFirst',
+    // 바로드림 스탬프 조회 (API-BIZ15-26-I001)
+    stamp: '/barodream/stamp',
+    // e교환권 다운로드 (API-BIZ15-26-I002)
+    excvcDownload: '/barodream/excvcDownload',
+    // e교환권 목록조회 (API-BIZ16-05-I-003)
+    excvc: '/barodream/excvc'
+  },
+  // 차단 등록 / 수정 (API-BIZ05-01-I-048, API-BIZ05-01-I-049)
+  block: '/block'
+  ,
+  // 판매제한 여부 (API-BIZ05-08-I017)
+  saleLmtt: '/srch/sale-lmtt'
+
+})
+
+/**
+ * API ----- [마이룸: MYR] -----
+ * - TODO: 경로 리팩토링
+ */
+KbbJS.setOption('api.urls.myr', {
+  main: {
+    userinfo: '/my-room/main/member-info',
+    voucher: '/my-room/main/member-voucher',
+    // 최근주문내역
+    recentOrders: '/my-room/main/member-order-info',
+    // 최근주문개수
+    recentOrderStats: '/my-room/main/member-order-stat',
+    shortcut: {
+      // 바로가기 리스트
+      list: '/my-room/main/member-shortcuts',
+      // 바로가기 편집
+      edit: '/my-room/main/update-member-shortcuts'
+    },
+    alarm: '/main/alarm-list',
+    // recomm: {
+    //   kyobo: '/main/picks/kyobo',
+    //   ebook: '/main/picks/ebook'
+    //   // hottracks: 'todo'
+    // },
+    sam: {
+      voucher: '/main/sam/voucher'
+    }
+  },
+  interest: {
+    /** 캐스팅 구독 */
+    castingSubscription: '/interest/casting-subscription',
+    /** 캐스팅 구독 취소 */
+    castingSubscriptionCancel: '/interest/cancel-casting-subscription',
+    /** 캐스팅 구독 다중 취소 */
+    multipleCancelCastingSubscription: '/interest/multiple-cancel-casting-subscription',
+    /** 라이브 알림 신청 (API-BIZ08-05-I-201) */
+    liveAlarmAdd: '/interest/live-alarm',
+    /** 라이브 알림 신청 취소 (API-BIZ08-05-I-210) */
+    liveAlarmCancel: '/interest/cancel-live-alarm',
+    // 독서, 시청 이력 등록 (API-BIZ08-05-I-200)
+    watchingHistory: '/interest/watching-history',
+    // 독서, 시청 이력 취소 (API-BIZ08-05-I-209)
+    watchingHistoryCancel: '/interest/cancel-watching-history',
+    /** 시리즈총서 알림 취소 (API-BIZ08-05-I-215) */
+    cancelSeriesAlarm: '/interest/cancel-series-alarm',
+    /** 시리즈총서 알림 신청 (API-BIZ08-05-I-206) */
+    seriesAlarm: '/interest/series-alarm',
+    /** 관심인물 알림 취소 (API-BIZ08-05-I-214)) */
+    cancelInterestedPersonAlarm: '/interest/cancel-interested-person-alarm',
+    /** 관심인물 알림 신청 (API-BIZ08-05-I-205) */
+    interestedPersonAlarm: '/interest/interested-person-alarm',
+    /** 관심 알림 신청 (API-BIZ08-05-I-208) */
+    interestAlarm: '/interest/interest-alarm',
+    /** 마이룸 북캐스트 구독 시리즈 목록조회 (API-BIZ08-05-I-006) */
+    selectSubscribeInfo: '/interest/selectSubscribeInfo'
+  },
+  myRoom: {
+    nbop: {
+      /** 찜 등록 */
+      myRoomNbopAdd: '/my-room/nbop/add',
+      /** 찜 등록 - 리스트 */
+      myRoomNbopAddList: '/my-room/nbop/add-list',
+      /** 찜 등록 리스트 */
+      myRoomNbopListAdd: '/my-room/nbop/add-list',
+      /** 찜 삭제 */
+      myRoomNbopDelete: '/my-room/nbop/delete',
+      /** 찜 삭제 - 리스트 */
+      myRoomNbopDeleteList: '/my-room/nbop/delete-list',
+      /** 찜 개수 */
+      myRoomNbopCount: '/my-room/nbop/nbop-count',
+      /** 찜 기본정보 */
+      myRoomNbopInfo: '/my-room/nbop/info',
+      /** 찜 기본정보 */
+      productList: '/my-room/nbop/product-list',
+      /** 찜 콘텐츠 목록 */
+      contentsList: '/my-room/nbop/contents-list',
+      /** 찜 문장수집 목록 */
+      sentenceList: '/my-room/nbop/sentence-list',
+      /** 찜 시리즈/총서 목록 */
+      seriesList: '/my-room/nbop/series-list',
+      /** 찜 작가 목록 */
+      writerList: '/my-room/nbop/writer-list',
+      /** 찜 브랜드 목록 */
+      brandList: '/my-room/nbop/brand-list',
+      /** 찜 전체 목록 */
+      allWishList: '/my-room/nbop/total-list'
+    },
+    library: {
+      /** 코멘트 조회, 저장, 수정 */
+      comment: '/my-room/library/comment',
+      /** 코멘트 삭제 */
+      commentDel: '/my-room/library/del-comment',
+      /** 코멘트 상세조회 */
+      commentDetail: '/my-room/library/comment-detail',
+      /** 리스트 목록, 저장, 수정 */
+      list: '/my-room/library/list',
+      /** 리스트 순서수정 */
+      orderList: '/my-room/library/order-list',
+      /** 리스트 > 상세 목록 */
+      cateList: '/my-room/library/list-detail',
+      /** 리스트 > 아이템 상세 */
+      prodDetail: '/my-room/library/list-product-info',
+      /** 리스트에 상품 저장 */
+      saveItem: '/my-room/library/list-product',
+      /** 리스트에 상품 복사, 이동, 삭제 */
+      controlList: '/my-room/library/list-product-update',
+      /** 리스트 삭제 */
+      deleteList: '/my-room/library/del-list',
+      /** 독서 히스토리 */
+      readHistory: '/my-room/library/product-reading-history',
+      /** 독서 히스토리 저장 */
+      recordHistory: '/my-room/library/reading-record',
+      /** 리스트 > 보관함 > 구 보관함 생성 */
+      preOrdrList: '/my-room/library/preOrdrList',
+      /** 리스트 > 엑셀다운로드 */
+      detailExcel: '/api/excel/my-room/library/listDetailExcel'
+    },
+    cltr: {
+      useList: '/my-room/cltr/use-list'
+    },
+    /** 마이룸 좋아요 목록 조회 (API-BIZ08-05-I-008) */
+    selectLikeInfo: '/my-room/selectLikeInfo',
+    /** 회원별 카테고리 즐겨찾기 해제 (API-BIZ08-03-I-채번중) */
+    deleteBookmark: '/my-room/deleteBookmark',
+    /** 회원 통합포인트 조회 (API-BIZ08-07-I-003) */
+    memberUpnt: '/my-room/member-upnt'
+  },
+  /** 프로필 조회, 등록, 수정 공통 */
+  profile: '/profile',
+  event: {
+    history: '/event/history',
+    participate: '/event/participate'
+  },
+  notice: {
+    /** 알림함 조회 */
+    box: '/notice',
+    /** 알림함 배너 조회 */
+    banner: '/notice/banner',
+    /** 알림 신청 갱신 */
+    alram: '/notice/alarm',
+    history: {
+      detail: {
+        /** 알림신청 내역 - 관심 작가 */
+        author: '/notice/history/authors',
+        /** 알림신청 내역 - 관심 시리즈/총서 */
+        series: '/notice/history/series',
+        /** 알림신청 내역 - eBook 출시 */
+        eBook: '/notice/history/ebook',
+        /** 알림신청 내역 - 상품 입고 */
+        stock: '/notice/history/stock',
+        /** 알림신청 내역 - 정기 메일 */
+        email: '/notice/history/email',
+        /** 마케팅수신 동의 내역 이메일 저장 */
+        marketing: '/notice/history/email/marketing',
+        /** 알림신청 내역 - 캐스팅 */
+        casting: '/notice/history/casting',
+        /** 알림신청 내역 - 라이브 */
+        live: '/notice/history/live'
+      }
+    }
+  },
+  app: {
+    /** 앱 푸시 조회 및 갱신 */
+    push: '/app/push',
+    /** 단골 매장 조회 */
+    store: '/app/regular-store',
+    /** 앱푸시설정 조회 (API-BIZ08-07-I-001) */
+    selectAppPush: '/my-room/selectAppPushEtc/'
+  },
+  library: {
+    /** GET 조회, POST 추가 */
+    list: '/my-room/library/list',
+    /** 시청/독서 이력 조회 (API-BIZ08-10-I-001) */
+    record: '/library/main/record',
+    /** DELETE 리스트 보관함 삭제 */
+    delete: '/my-room/library/del-list',
+    /** POST 회원별 마이룸 리스트 상품 저장 (API-BIZ08-03-I-미정) */
+    addItem: '/my-room/library/list-product',
+    /** 라이브러리 메인 */
+    main: {
+      /** 리스트 목록 조회 (API-BIZ08-10-I-003) */
+      list: '/library/main/list',
+      /** 월별 독서 기록 조회 (API-BIZ08-10-I-002) */
+      monthlyRecord: '/library/main/monthly-record',
+      /** 나의 추천 기록 조회 (API-BIZ08-10-I-005) */
+      myRecommend: '/library/main/my-recommend',
+      /** 나의 기록 조회 (API-BIZ08-10-I-004) */
+      myRecord: '/library/main/my-record',
+      /** 시청/독서 이력 조회 (API-BIZ08-10-I-001) */
+      record: '/library/main/record'
+    }
+  },
+  'consult-product': {
+    count: '/consult/product/count',
+    list: '/consult/product/list',
+    post: '/consult/product/post'
+  }
+})
+
+/**
+ * API ----- [북캐스트: BCF] -----
+ */
+KbbJS.setOption('api.urls.bcf', {
+  /** 북캐스트 홈 */
+  home: {
+    /** 지식콘텐츠 캐스팅 콘텐츠 목록 조회 (API-BIZ13-01-I-013) */
+    contents: '/home/contents',
+    /** 주제별 캐스팅 콘텐츠 목록 조회 (API-BIZ13-01-I-016) */
+    contentsTopic: '/home/contents-topic',
+    /** 이벤트명 및 당첨자 게시물명 목록 조회 (API-BIZ13-01-I-015) */
+    eventName: '/home/event-name',
+    /** 인터뷰 캐스팅 콘텐츠 목록 조회 (API-BIZ13-01-I-010) */
+    interview: '/home/interview',
+    /** 키워드 목록 조회 (API-BIZ13-01-I-007) */
+    keywords: '/home/keywords',
+    /** KYOBO Original 목록 조회 (API-BIZ13-01-I-009) */
+    kyoboOriginal: '/home/kyobo-original',
+    /** 강연 캐스팅 콘텐츠 목록 조회 (API-BIZ13-01-I-011) */
+    lecture: '/home/lecture',
+    /** 라이브영상 편성 목록 조회 (API-BIZ13-01-I-002) */
+    liveSchedule: '/home/live-schedule',
+    /** 인기 캐스트 목록 조회 (API-BIZ13-01-I-006) */
+    popularityContents: '/home/popularity-contents',
+    /** 뜨는 키워드 콘텐츠 목록 조회 (API-BIZ13-01-I-008) */
+    popularityKeywordContents: '/home/popularity-keyword-contents',
+    /** 추천 검색어 목록 조회 (API-BIZ13-01-I-001) */
+    searchWord: '/home/search-word',
+    /** 쇼핑 캐스팅 콘텐츠 목록 조회 (API-BIZ13-01-I-012) */
+    shopping: '/home/shopping',
+    /** 구독한 캐스터 최신글 목록 조회 (API-BIZ13-01-I-005) */
+    subscriptionCaster: '/home/subscription-caster',
+    /** 구독한 시리즈 최신글 목록 조회 (API-BIZ13-01-I-004) */
+    subscriptionSeries: '/home/subscription-series',
+    /** 시청중인 영상 목록 조회 (API-BIZ13-01-I-003) */
+    watching: '/home/watching'
+  },
+  casting: {
+    /** 카테고리별 캐스팅 콘텐츠 목록 */
+    categories: '/casting/categories',
+    /** 주제별 북캐스트 목록 */
+    topic: '/casting/topic',
+    /** 영상 캐스팅 콘텐츠 목록 */
+    video: '/casting/video',
+    /** 포스트 캐스팅 콘텐츠 목록 */
+    post: '/casting/post',
+    /** 포스트 캐스팅 콘텐츠 디테일 */
+    detail: '/casting'
+  },
+  event: {
+    /** 이벤트 리스트 */
+    list: '/event'
+  },
+  winner: {
+    /** 당첨자 리스트 */
+    list: '/winner'
+  },
+  search: {
+    /** 북캐스터 목록 조회 */
+    caster: '/search/caster',
+    /** 캐스팅 목록 조회 */
+    casting: '/search/casting',
+    /** 이벤트 목록 조회 */
+    event: '/search/event',
+    /** 태그명 목록 조회 */
+    tag: '/search/tag'
+  },
+
+  bookcaster: {
+    /** 북캐스터  상세 조회 */
+    detail: '/bookcaster'
+  },
+
+  series: {
+    /** 시리즈 상세 */
+    detail: '/series'
+  }
+})
+
+/**
+ * API ----- [이벤트: EVT] -----
+ */
+KbbJS.setOption('api.urls.evt', {
+  'event-main': {
+    /** 이벤트 메인 카테고리 조회 **/
+    category: '/event-main/category',
+    /** 이벤트 메인 이벤트 목록 조회 **/
+    event: '/event-main/event',
+    /** 이벤트 메인 추천 키워드 목록 조회 **/
+    keyword: '/event-main/keyword'
+  },
+  calendar: {
+    list: '/calendar',
+    category: '/calendar/category'
+  },
+  cultural: {
+    contents: '/cultural-contents'
+  },
+  /** 이벤트 응모 (API-BIZ04-01-061) */
+  enter: '/event/enter',
+  eventMake: {
+    insertEventMake: '/event/event-make/insertEventMake',
+    selectEventMake: '/event/event-make/selectEventMake',
+    postEventMake23: '/event/event-make/event-make-23'
+  },
+  /** 금권 다운로드 (API-BIZ04-01-300) **/
+  provision: {
+    download: '/provision/download',
+    coupons: '/provision/download/multi-coupons'
+  },
+  /** 주말북권 */
+  weekBook: {
+    download: '/week-book/download'
+  }
+})
+
+/**
+ * API ----- [검색: SCH] -----
+ */
+KbbJS.setOption('api.urls.sch', {})
+
+/**
+ * API ----- [주문: ORD] -----
+ */
+KbbJS.setOption('api.urls.ord', {
+  cart: {
+    addCartProc: '/cart/addCartProc'
+  },
+  brdr: {
+    /** 관심매장 설정/해제 (API-BIZ06-02-I034) **/
+    attention: '/brdr/store/attention'
+  },
+  delivery: {
+    // 배송지조회
+    addr: '/delivery/address'
+  },
+  list: '/order/orderList'
+})
+
+/**
+ * API ----- [AWS_S3: S3] -----
+ */
+KbbJS.setOption('api.urls.s3', {
+  /**
+   * 50GB용량 미만 파일 업로드
+   * /upload/{directory-path}
+   */
+  upload: '/upload',
+  /**
+   * GET: 특정 폴더 하위의 모든 파일을 조회; /files/{path}
+   * DELETE: 파일 제거; /files/{path}?fileName={fileName}
+   */
+  files: '/files',
+  /**
+   * GET
+   * @example
+   * /download/{path}?fileName={fileName}
+   */
+  download: '/download',
+  /**
+   * GET: 특정 폴더 하위의 파일 단건 조회; /file/{path}
+   * /file/{directory-path}
+   */
+  get: '/file'
+})
+
+/**
+ * 리소스 설정 #1 :: 고유 이름
+ */
+KbbJS.setOption('resource.names', {
+  GOOGLE_FONT: 'google-fonts',
+  JQUERY_UI: 'jquery-ui',
+  JQUERY_UI_SPINNER: 'jquery.ui.spinner',
+  JQUERY_UI_TOUCH: 'jquery.ui.touch-punch',
+  SIMPLEBAR: 'simplebar',
+  SWIPER: 'swiper',
+  RESIZE_SENSOR: 'ResizeSensor',
+  SVGXUSE: 'svgxuse',
+  MASONRY: 'masonry',
+  AWESOMPLETE: 'awesomplete',
+  STAR_RATING: 'star-rating',
+  SCROLL_POS_STYLER: 'scrollPosStyler',
+  BLURIFY: 'blurify',
+  KAKAO_SDK: 'kakao-sdk',
+  FACEBOOK_SDK: 'facebook-sdk',
+  NAVER_SDK: 'naver-sdk',
+  GOOGLE_SDK: 'google-sdk',
+  APPLE_SDK: 'apple-sdk',
+  JWPLAYER: 'jwplayer',
+  // [CDN]/css/style_ink.css
+  KBB_CM_STYLE: 'kbb-cm-style',
+  // [CDN]/js/ui_ink.js
+  KBB_CM_SCRIPT: 'kbb-cm-script',
+  // [CDN]/css/service_ink.css
+  KBB_CM_SERVICE_CSS: 'kbb-cm-service-css',
+  // [CDN]/js/service/ui_service_ink.js
+  KBB_CM_SERVICE_JS: 'kbb-cm-service-js',
+  // [BIZ]/assets/js/pub/ui_[biz]_ink.js
+  KBB_CM_LOCAL_JS: 'local-common-js',
+  KBB_CM_LOCAL_CSS: 'local-common-css'
+})
+
+  /**
+   * 리소스 설정 #2 :: 데이터
+   */
+  ; (function (ResName) {
+    var oResult = {}
+      ;[
+        {
+          name: ResName.JWPLAYER,
+          value: '/CDN/vendors/jwplayer-8.24.3/jwplayer.js'
+        },
+        {
+          name: ResName.NAVER_SDK,
+          value: '/CDN/vendors/naver/naveridlogin_js_sdk_2.0.2-nopolyfill.js'
+        },
+        {
+          name: ResName.KAKAO_SDK,
+          value: 'https://developers.kakao.com/sdk/js/kakao.js'
+        },
+        {
+          name: ResName.GOOGLE_SDK,
+          value: 'https://apis.google.com/js/platform.js'
+        },
+        {
+          name: ResName.FACEBOOK_SDK,
+          value: 'https://connect.facebook.net/ko_KR/sdk.js'
+        },
+        {
+          name: ResName.APPLE_SDK,
+          value: 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js'
+        },
+        {
+          name: ResName.KBB_CM_SCRIPT,
+          value: {
+            url: '/CDN/js/ui-onk/pub/ui_ink.js'
+          }
+        },
+        {
+          name: ResName.KBB_CM_SERVICE_CSS,
+          value: {
+            url: '/CDN/css/service_ink.css'
+          }
+        },
+        {
+          name: ResName.KBB_CM_SERVICE_JS,
+          value: [
+            { name: ResName.KBB_CM_SERVICE_CSS },
+            {
+              url: '/CDN/js/service/ui_service_ink.js',
+              dependOn: [
+                ResName.KBB_CM_SERVICE_CSS,
+                ResName.KBB_CM_SCRIPT
+              ]
+            }
+          ]
+        }
+      ].forEach(function (o) {
+        oResult[o.name] = o.value
+      })
+    KbbJS.setOption('resource.data', oResult)
+  })(KbbJS.getOption('resource.names'))
+
+/**
+ * 외부 라이브러리 설정 #3 :: 기타
+ * - TODO: names 속성과 병합
+ * - apikey: 개발자API(라이센스) 키
+ * - apikey.dev : Development & Staging
+ * - apikey.prod: Producton
+ */
+KbbJS.setOption('vendors', {
+  /**
+   * jwplayer API reference
+   * @see https://developer.jwplayer.com/jwplayer/docs/jw8-javascript-api-reference
+   */
+  jwplayer: {
+    apikey: {
+      dev: 'RIaTq+KghSvoFLLiB2bZjhug/KxMGls/wOB3wIs6J96K6rAj',
+      prod: 'tkqamfwhNa/e1hgDJGxaT/xo674xp7CVr+jfNm8yW8nM7aXZ'
+    }
+  },
+  /**
+   * kakao
+   * - 공유하기
+   */
+  /**
+   * kakao, naver, google, apple, facebook 개발자 키
+   */
+  kakao: {
+    /** @todo 개발키로 변경 */
+    apikey: {
+      dev: 'b165c6cc0229ad6adf3f3ef1cb9a752a',
+      prod: 'b165c6cc0229ad6adf3f3ef1cb9a752a'
+    },
+    restApiKey: {
+      dev: 'f9dbb78f55c69a5f13af516b4e485c57',
+      prod: '38698a5d6ea0dbf8d047a85a40c808f3'
+    },
+    maps: [
+      'https://dapi.kakao.com/v2/maps/sdk.js',
+      'https://t1.daumcdn.net/mapjsapi/js/main/4.4.3/kakao.js',
+      'https://t1.daumcdn.net/mapjsapi/js/libs/services/1.0.2/services.js'
+    ]
+  },
+  /**
+   * naver
+   * - capcha
+   */
+  naver: {
+    authUrl: 'https://nid.naver.com/oauth2.0',
+    apikey: {
+      dev: '8rFhudy3AcT5Wh6058Ha',
+      // dev: 'qdP0Pty5J1XNjMyobM0e',
+      prod: 'X81rGLPBmZMrIAVVSzh0'
+    },
+    clientSecret: {
+      dev: 'khxig11gGt',
+      // dev: 'YUIue7Q4Bp',
+      prod: 'Bd8sNEaB18'
+    },
+    // naver captcha
+    captcha: {
+      url: 'https://openapi.naver.com/v1/captcha/nkey?code=0',
+      clientId: {
+        dev: 'xrkniGzP350vdcrjswiW',
+        prod: 'xrkniGzP350vdcrjswiW'
+      },
+      clientSecret: {
+        dev: 'iQlvVOk_fj',
+        prod: 'iQlvVOk_fj'
+      }
+    }
+  },
+  /**
+   * google
+   */
+  google: {
+    apikey: {
+      dev: '837931583915-c1a9ut9vlgohakpnngv2lv6st6i9fakj.apps.googleusercontent.com',
+      prod: '837931583915-c1a9ut9vlgohakpnngv2lv6st6i9fakj.apps.googleusercontent.com'
+    }
+  },
+  /**
+   * apple
+   */
+  apple: {
+    apikey: {
+      dev: 'kr.co.kyobobook.mobile',
+      prod: 'kr.co.kyobobook.mobile'
+    }
+  },
+  /**
+   * facebook
+   */
+  facebook: {
+    apikey: {
+      dev: '1091391514771437',
+      prod: '1091391514771437'
+    }
+  },
+  /**
+   * picks
+   */
+  picks: {
+    cuid: {
+      dev: 'f5fbf232-7e27-4ca3-b922-b3a56d79780b',
+      stage: '2e514b09-86fe-4c69-8ec9-0a8c8416d2ae',
+      prod: '4ffe4f3c-7219-4bd2-a7ae-eba4aefc9b19'
+    }
+  },
+  /**
+     * RTS
+     */
+  rts: {
+    cuid: {
+      dev: 'a7319bca-2a26-497d-b1aa-9b410e1193f6',
+      stage: '2af19936-d725-4320-b73e-6e8a3f29ad5f',
+      prod: 'd37a866b-3e69-4570-8ef2-36e01b487dd4'
+    }
+  }
+})
+
+/**
+ * 공통 경고 메시지 설정
+ * - MSG_CODE : 리팩토링
+ * @see https://onk.ndev.kyobobook.co.kr/sample/alert
+ */
+KbbJS.setOption('message.alert', {
+  TEST_MSG_1: '{{ DATE }} 부터 가능합니다.',
+  AL_02_0005: { text: '즐겨찾기에 등록된 카테고리 전체해제하시겠습니까?', cancel: true },
+  AL_04_0001: '소진되었습니다.',
+  AL_04_0002: 'e교환권 발급이 완료되었습니다.',
+  AL_04_0003: 'e캐시 지급이 완료되었습니다',
+  AL_04_0004: '통합포인트 지급이 완료되었습니다',
+  AL_04_0005: '이미 발급된 혜택입니다.',
+  AL_04_0006: '응모되었습니다.',
+  AL_04_0007: '이벤트 주소가 복사되었습니다.',
+  AL_04_0008: '제출되었습니다.',
+  AL_04_0009: '공유 게시글 URL을 입력해주세요.',
+  AL_04_0010: '복사되었습니다.',
+  AL_04_0011: '정답입니다! 혜택이 지급되었습니다.',
+  AL_04_0012: '앗! 아쉽지만 틀렸어요.',
+  AL_04_0013: '답변을 선택해주세요.',
+  AL_04_0014: '나의 찜한작가에 추가되었습니다.',
+  AL_04_0015: '북메이트로 참여되었습니다.',
+  AL_04_0016: '{{ MM }}/{{ DD }}일 출석체크 도장 +1개가 적립되었습니다.<br/>하단 퀴즈를 통해 추가 적립 기회에 도전해보세요.',
+  AL_04_0017: 'e교환권을 다운로드 하시겠습니까?<br/>※발급 당일에만 사용 가능',
+  AL_04_0018: '정답입니다. 출석도장 추가 + 1개!',
+  AL_04_0019: '오답입니다. 내일 다시 도전해보세요!',
+  AL_04_0020: '정답을 선택해주세요.',
+  AL_04_0021: { text: '신청을 취소하시겠습니까?', cancel: true },
+  AL_04_0022: '신청이 완료되었습니다.',
+  AL_04_0023: '아쉽네요! 선착순 증정이 종료되었습니다.<br/>다음 골든 타임에 참여해주세요.',
+  AL_05_0001: '입력 가능한 최대 수량은 {{ COUNT }}개 입니다',
+  AL_05_0002: '1이상 숫자를 입력해주세요',
+  AL_05_0003: '쿠폰발급이 완료되었습니다',
+  AL_05_0005: '이미 발급된 쿠폰입니다',
+  AL_05_0006: { title: '찜 설정 시 알림 설정도 함께 설정됩니다.', text: '설정하겠습니까?', cancel: true },
+  AL_05_0007: { title: '로그인 후 이용가능합니다', text: '로그인 페이지로 이동하시겠습니까?', cancel: true },
+  AL_05_0008: { title: '찜 해제 시 알림 설정도 함께 해제됩니다.', text: '해제하겠습니까?', cancel: true },
+  AL_05_0009: { title: '상품이 장바구니에 담겼습니다.', text: '장바구니로 이동하시겠습니까?', cancel: true },
+  AL_05_0010: { title: '장바구니에 이미 담은 상품이 있어<br/>수량이 추가 되었습니다.', text: '장바구니로 이동하시겠습니까?', cancel: true },
+  AL_05_0011: { title: '장바구니 담기가 불가능한 상품을 제외한 {{ COUNT }}개의 상품이 장바구니에 담겼습니다.', text: '장바구니로 이동하시겠습니까?', cancel: true },
+  AL_05_00011: '현재 주문 가능한 수량은 {{ COUNT }}권입니다.',
+  AL_05_0017: 'POD 도서는 주문취소나 반품이 불가하며, 취소/반품에 대한 안내(필수)에 동의하셔야 장바구니 담기 및 주문 가능합니다.',
+  AL_05_0012: { title: '찜 설정 시 알림 설정도 함께 설정됩니다.', text: '설정하겠습니까?', cancel: true },
+  AL_05_0014: '선택한 상품이 없습니다.',
+  AL_05_0015: '알림신청이 완료되었습니다.<br/>새로운 소식이 있으면 알려드릴게요.',
+  AL_05_0016: '이미 알림 신청이 등록된 상품입니다.',
+  AL_05_0018: '알림신청이 완료되었습니다.<br/>상품이 입고 되면 알려드릴게요.',
+  AL_05_0013: { title: '찜하기는 로그인 후 이용할 수 있어요.', cancel: true, confirm: { label: '이동하기' } },
+  AL_05_0021: '알림신청이 완료되었습니다.<br/>상품이 출시되면 알려드릴게요.',
+  AL_05_0019: '이미 알림신청이 등록된 상품입니다.',
+  AL_05_0020: { title: '등록하시겠습니까?', cancel: true },
+  AL_05_0022: '이미 출시 알림 신청이 등록된 상품입니다.',
+  AL_05_0024: '이미지는 JPG, PNG 파일만 첨부 가능합니다.',
+  AL_05_0026: { title: '작성한 내용은 저장되지 않습니다.', text: '취소하겠습니까?', cancel: true },
+  AL_05_0027: { text: '삭제하시겠습니까?', cancel: true },
+  AL_05_0028: '신고 처리되었습니다.',
+  AL_05_0030: '부적절한 활동이 의심되어<br/>리뷰작성이 제한되었습니다.<br/>고객센터 > 1:1 상담을 통해 문의해주세요.',
+  AL_05_0031: '구매 후 한달이 경과했습니다. 한달 후 리뷰를 작성하실 수 있습니다',
+  AL_05_0033: '리뷰 내용에 금칙어가 포함되어 있습니다.<br/>다시 작성해주세요.',
+  AL_05_0034: '다운로드가 완료되었습니다.<br/>앨범을 확인해주세요.',
+  AL_05_0035: { title: '이미 구매한 상품이 포함되어있습니다.', text: '제외하고 장바구니로 이동하시겠습니까?', cancel: true },
+  AL_05_0036: '무료 상품을 제외하고 주문서로 이동됩니다.<br/>무료상품은 구매 후 마이룸에서 확인하실 수 있습니다.',
+  AL_05_0037: { title: 'POD도서는 고객 주문 후 제작되는 도서로, 단순변심 및 착오로 인한 취소, 반품이 절대 불가하니 이점 반드시 유의하여 주시기 바랍니다.', text: '취소/반품 안내에 동의합니다.', cancel: true },
+  AL_05_0038: '무료 상품을 제외하고 장바구니에 담겼습니다.<br/>무료상품은 구매 후 마이룸에서 확인하실 수 있습니다.',
+  AL_05_0039: '선택한 상품이 옵션에 담겼습니다.',
+  AL_05_0040: { text: '찜 해제 시 알림 설정도 함께 해지 됩니다.<br/>해지하시겠습니까?', cancel: true },
+  AL_05_0041: '상품등록이 완료되었습니다.',
+  AL_05_0042: '선택된 옵션입니다. 다시 선택해주세요.',
+  AL_05_0043: '확인할 수 없는 상품입니다.',
+  AL_05_0044: '무료 상품을 제외하고 선물하기 화면으로 이동됩니다.',
+  AL_05_0045: { title: '이미 구매한 상품이 포함되어있습니다.', text: '제외하고 주문서로 이동하시겠습니까?', cancel: true },
+  AL_05_0046: '고객님은 sam회원입니다.<br/>"확인" 선택시 배송지 등록화면으로 이동됩니다.',
+  AL_05_0047: { title: '최대 주문가능한 상품수는 100개 입니다.', text: '100개만 선택하여 주문해 주세요.' },
+  AL_05_0048: { title: '장바구니 최대 보관 수량(200개)을 초과하여 더 이상 담을 수 없습니다' },
+  AL_05_0049: {
+    title: '• 해당 도서는 고객 주문 후 <span style="color: #1976e3;">양장</span>(하드커버)로 <span style="color: #1976e3;">제작</span>되는 POD <span style="color: #1976e3;">도서로 출고까지</span><br><span style="color: #ec1f2d;"> 영업일 기준 7일 소요</span>됨을 안내 드립니다. ' +
+      '<br/><br/>• POD 도서는 고객 주문 후 제작되는 도서로, 단순 변심 및 착오로 인해 취소,반품이 절대 불가하니 이점 반드시 유의하여 주시기 바랍니다.', text: '출고예정일 확인 및 취소/반품 안내에 동의합니다.', cancel: true
+  },
+  AL_05_0050: { title: '선택한 상품을 담을 수 없습니다.', text: '장바구니 담기가 불가능한 상품입니다.' },
+  AL_09_0001: '삭제할 목록을 선택해주세요.',
+  AL_09_0002: { text: '선택한 내역을 삭제하시겠습니까?', cancel: true },
+  AL_09_0003: '목록이 선택되어 있는 상태에서는 필터를 변경하실 수 없습니다. 목록 선택을 해제하고 필터를 적용하시겠습니까?',
+  AL_10_0003: { text: '생체인증 로그인이 설정되었습니다.', cancel: true },
+  AL_10_0005: '간편비밀번호를 다시 입력해 주세요.',
+  AL_10_0006: '기기 설정 메뉴에서 기능 활성화 후<br/>사용해 주세요.',
+  AL_10_0010: '본인인증이 완료되었습니다.',
+  AL_10_0011: '본인인증에 실패했습니다. ',
+  AL_10_0015: '생체인증 시도 횟수 초과로<br/>생체인증 사용이 중지되었습니다.',
+  AL_10_0021: '아이디/비밀번호 로그인 후 재설정 해주세요.',
+  AL_10_0023: '법인회원은 SNS 로그인을<br/>이용할 수 없습니다.',
+  AL_10_0024: '만 14세 미만은 SNS 로그인을<br/>이용할 수 없습니다.',
+  AL_10_0044: '본인인증된 회원정보가 있습니다. <br/>아이디 찾기 또는 고객센터<br/>(1544-1900)로 문의해 주시기<br/>바랍니다.',
+  AL_10_0047: '회원정보 수정이 완료되었습니다.',
+  AL_10_0049: '신청이 완료되었습니다.',
+  AL_10_0050: '인증 받을 항목을 선택해 주세요.',
+  AL_10_0051: '증빙서류를 첨부해 주세요.',
+  AL_10_0052: 'SNS 계정 연동이 해제되었습니다.',
+  AL_10_0053: 'SNS 계정이 연동되었습니다.',
+  AL_10_0054: '마케팅 수신 및 정보 제공 동의가<br/>수정 완료되었습니다.',
+  AL_10_0056: '이메일 인증을 완료해 주세요.',
+  AL_10_0063: { text: '회원탈퇴를 하시겠습니까?', cancel: true },
+  AL_10_0072: '사용중인 SNS 계정입니다. 연결된 정보를 확인해 주세요.',
+  AL_10_0073: '쿠폰발급이 완료되었습니다.',
+  AL_10_0079: '생체인증 연결이 해제되었습니다.',
+  AL_10_0080: '생체인증이 연결되었습니다.',
+  AL_10_0082: '간편비밀번호 연결이 해제되었습니다.',
+  AL_10_0083: '간편비밀번호 로그인이 연결되었습니다.',
+  AL_10_0084: '간편비밀번호가 변경되었습니다.',
+  AL_10_0086: '자동 로그인 연결이 해제되었습니다.',
+  AL_10_0097: '정보 제공/수신 동의가 수정되었습니다.',
+  AL_10_0101: { title: '입력한 정보는 저장되지 않습니다.', text: '화면을 벗어나시겠습니까?', cancel: true },
+  AL_10_0102: { title: '본인인증 후 회원정보 수정이 가능합니다.', text: '본인인증 하시겠습니까?', cancel: true },
+  AL_10_0129: '변경된 정보가 없습니다.',
+  AL_15_0001: { title: '이미 상품이 장바구니에 담겨있습니다. ', text: '장바구니로 이동하시겠습니까?', cancel: true },
+  AL_15_0002: { title: '상품이 장바구니에 담겼습니다.', text: ' 장바구니로 이동하시겠습니까?', cancel: true },
+  AL_15_0003: { text: '오늘의 선택 알림 서비스 구독을 해제하시겠습니까?', cancel: true },
+  AL_15_0004: { text: '오늘의 선택 알림 서비스를 구독하시겠습니까?', cancel: true },
+  AL_15_0005: { text: '품절/절판된 상품을 제외한 {{ COUNT }}개의 상품이 장바구니에 담겼습니다.<br/>장바구니로 이동하시겠습니까?', cancel: true },
+  AL_15_0006: '검색어를 입력해주세요.',
+  AL_15_0007: { title: '등록하시겠습니까?', cancel: true },
+  AL_15_0008: { title: 'JPG, JPEG 파일만 업로드 가능 합니다.' },
+  AL_15_0009: { title: '내용을 입력해주세요.' },
+  AL_15_0010: { title: '필수 입력 항목을 확인해주세요.' },
+  AL_15_0011: { title: '입력하신 정보가 저장되지 않습니다.', text: '다음에 작성하시겠습니까?', cancel: true },
+  AL_15_0020: { text: '등록하시겠습니까?', cancel: true },
+  AL_15_0028: '최대 5개까지 선택 가능합니다.',
+  AL_15_0037: '연관도서가 모두 선택되어있습니다. 상품 삭제 후 선택해주세요.',
+  FORBIDDEN_WORD: { title: '작성내용에 금칙어가 포함되어 있습니다.', text: '(금칙어: {{ WORDS }})<br/>다시 작성해주세요.' },
+  testFuncMsg: function (info) {
+    return {
+      title: 'testFuncMsg',
+      text: info.date + ' 부터 가능합니다.',
+      confirm: { label: 'YES' },
+      cancel: { label: 'NO' }
+    }
+  }
+})
+
+/**
+ * 인증 모듈 옵션
+ */
+KbbJS.setOption('auth', {
+  init: {
+    // 기본값: true
+    authorize: true
+  },
+  redirect: {
+    // 로그인 사이트 URL
+    login: '/MBR/login',
+    // 로그아웃 후 이동할 사이트
+    welcome: '/ONK/'
+  }
+  // SSO 연동 사이트 리스트
+  // sso: {
+  //   sites: [],
+  //   // iframe postMessage response timeout(second)
+  //   timeout: 0.5
+  // },
+})
+
+/**
+ * 판매상품구분코드
+ */
+KbbJS.setOption('product.code', {
+  /**
+   * ProductGroup
+   * 상품그룹코드: 판매상품그룹구분코드(saleCmdtGrpDvsnCode)
+   */
+  group: {
+    // 1. 교보문고배송상품(국내도서,보유외서,보유일서,해외주문외서,해외주문일서,PB상품,POD)
+    KYOBO_PRODUCT: 'SGK',
+    // 2. 결합상품
+    COMBI_PRODUCT: 'SGP',
+    // 3. 핫트랙스(음반,DVD,기프트)
+    HOTTRACKS: 'SGH',
+    // 4. 컬쳐(공연,강연,여행)
+    CULTURE: 'SGC',
+    // 5. 상품권
+    GIFT_CARD: 'SGG',
+    // 6. 오픈마켓
+    OPEN_MARKET: 'SGO',
+    // 7. 판매옵션상품
+    OPTION_PRODUCT: 'SGS',
+    // 8. 디지털컨텐츠(ebook,오디오,SAM)
+    DIGITAL: 'SGD',
+    // 9. 동영상
+    VIDEO_PRODUCT: 'SGM'
+  },
+  /**
+   * ProductCategory
+   * 상품유형코드: 판매상품구분코드(saleCmdtDvsnCode)
+   */
+  category: {
+    /* ---------- [ 1. 교보문고배송상품 ] ---------- */
+    // 국내도서
+    KYOBO_BOOK_KOR: 'KOR',
+    // 해외주문외서 > 보유외서
+    KYOBO_BOOK_ENG: 'ENG',
+    // 해외주문외서 > ??
+    KYOBO_BOOK_ENG_BNT: 'BNT',
+    // 해외주문외서 > 보유일서
+    KYOBO_BOOK_ENG_JAP: 'JAP',
+    // 해외주문외서 > 해외주문일서
+    KYOBO_BOOK_ENG_JNT: 'JNT',
+    // PB상품(교보굿즈)
+    KYOBO_PB: 'PBC',
+    // POD
+    KYOBO_POD: 'POD',
+    // 디지털교환상품
+    KYOBO_DGV: 'DGV',
+    /* ---------- [ 2. 결합상품 ] ---------- */
+    // 결합상품
+    COMBI_PRODUCT: 'CMB',
+    /* ---------- [ 3. 핫트랙스 ] ---------- */
+    // 음반
+    HOTTRACKS_MUSIC_ALBUM: 'MUC',
+    // DVD
+    HOTTRACKS_DVD: 'DVD',
+    // 기프트
+    HOTTRACKS_GIFT: 'GFT',
+    /* ---------- [ 4. 컬쳐 ] ---------- */
+    // 컬쳐
+    CULTURE: 'CUL',
+    /* ---------- [ 5. 상품권 ] ---------- */
+    // 상품권
+    GIFT_CARD: 'GFC',
+    /* ---------- [ 6. 오픈마켓 ] ---------- */
+    // 오픈마켓
+    OPEN_MARKET: 'OPN',
+    /* ---------- [ 7. 판매옵션상품 ] ---------- */
+    // 판매옵션상품
+    OPTION_PRODUCT: 'OPT',
+    /* ---------- [ 9. 동영상 ] ---------- */
+    // 동영상
+    VIDEO_PRODUCT: 'MOV',
+    /* ---------- [ 10. Ebook ] ---------- */
+    // Ebook 도서
+    EBOOK: 'EBK',
+    // 오디오북
+    EBOOK_AUDIO: 'AUD',
+    // 동영상북
+    EBOOK_VIDEO: 'VID',
+    // 학술논문
+    EBOOK_DUM: 'DUM',
+    // SAM
+    EBOOK_SAM: 'SAM'
+  }
+})
+
+/**
+ * 제휴 채널
+ */
+KbbJS.setOption('message.welcome.alliance', {
+  // 드림엑스
+  HHF: {
+    name: '드림엑스',
+    msg: '드림엑스로 접속되어 드림캐쉬 3% 적립의 혜택이 적용됩니다.'
+  },
+  // 공무원연금
+  PGW: {
+    name: '공무원연금',
+    msg: '공무원복지포털을 경유하여 접속되었습니다.'
+  },
+  // 쿡존
+  PMP: {
+    name: '쿡존',
+    msg: '쿡존으로 접속되어, 3% 현금적립의 혜택이 적용됩니다.'
+  },
+  // 신한카드몰
+  SHC: {
+    name: '신한카드몰',
+    msg: '신한카드몰을 경유하여 접속되었습니다.'
+  },
+  // 문화누리카드
+  MNC: {
+    name: '문화누리카드',
+    msg: '인터넷교보문고/전국 매장에서 사용 가능한 도서,음반,DVD,ebook 구매 전용 카드'
+  },
+  // 컬처랜드
+  CLC: {
+    name: '컬처랜드',
+    msg: '컬쳐캐시를 이용하여 주문가능'
+  },
+  // 북코스모스
+  BC: {
+    name: '북코스모스',
+    msg: '북코스모스를 경유하여 접속되었습니다.'
+  },
+  // 씨티카드
+  CCS: {
+    name: '씨티카드',
+    msg: '씨티카드몰로 경유하여 접속되었습니다'
+  },
+  // 현대카드몰
+  HCM: {
+    name: '현대카드몰',
+    msg: '현대카드몰을 경유하여 접속되었습니다'
+  },
+  // 삼성카드
+  SCM: {
+    name: '삼성카드',
+    msg: '삼성카드 쇼핑을 경유하여 접속되었습니다.'
+  },
+  // OtvN
+  TVN: {
+    name: 'OtvN',
+    msg: 'tvN on/tnN의 제휴링크로 접속하셨습니다.'
+  },
+  // 지식캠퍼스
+  GSK: {
+    name: '지식캠퍼스',
+    msg: '경기도 평생교육진흥원을 경유하여 접속되었습니다.'
+  },
+  // 공동구매
+  KGLINKYN: {
+    name: '공동구매',
+    msg: '공동구매링크로 접속하셨습니다'
+  },
+  // EBS 초등교재몰
+  EET: {
+    name: 'EBS 초등교재몰',
+    msg: 'EBSi, EBS를 경유하여 접속되었습니다. EBS(초등,중학)를 경유하여 접속시 EBS 꿈포인트를 사용하실 수 없습니다.'
+  },
+  // EBS 중학교재몰
+  EMT: {
+    name: 'EBS 중학교재몰',
+    msg: 'EBSi, EBS를 경유하여 접속되었습니다. EBS(초등,중학)를 경유하여 접속시 EBS 꿈포인트를 사용하실 수 없습니다.'
+  },
+  // EBS 고교교재몰
+  EHT: {
+    name: 'EBS 고교교재몰',
+    msg: 'EBSi, EBS를 경유하여 접속되었습니다. EBS(초등,중학)를 경유하여 접속시 EBS 꿈포인트를 사용하실 수 없습니다.'
+  },
+  // 대한항공
+  KRA: {
+    name: '대한항공',
+    msg: '대한항공을 경유하여 접속되었습니다.'
+  },
+  // 윌라
+  WLA: {
+    name: '윌라',
+    msg: '윌라를 경유하여 접속되었습니다.'
+  },
+  // 네이버책
+  NVB: {
+    name: '네이버책',
+    msg: '네이버책을 경유하여 접속되었습니다.'
+  },
+  // 다음책서비스
+  PDM: {
+    name: '다음책서비스',
+    msg: '다음책을 경유하여 접속되었습니다.'
+  },
+  // OK캐쉬백GW
+  OCB: {
+    name: 'OK캐쉬백GW',
+    msg: 'OK캐쉬백을 경유하여 접속되었습니다.'
+  },
+  // 네이버책모바일
+  NVM: {
+    name: '네이버책모바일',
+    msg: '네이버책을 경유하여 접속되었습니다.'
+  },
+  // 다음모바일
+  MDM: {
+    name: '다음모바일',
+    msg: '다음책을 경유하여 접속되었습니다.'
+  },
+  // 신한앱카드
+  SHA: {
+    name: '신한앱카드',
+    msg: '신한 FAN을 통해 모바일교보문고에 방문하셨습니다.<br/>신한 FAN페이(앱카드)를 통해 카드번호, 비밀번호 입력 없이 편리하게 결제 진행 가능합니다.<br/>다른 결제수단을 이용 하고자 하시는 고객님께서는 제휴접속을 종료하신 후 결제 진행 하시면 됩니다. 제휴접속 종료하기'
+  },
+  // 삼성앱카드
+  SSA: {
+    name: '삼성앱카드',
+    msg: '삼성카드를 통해 모바일교보문고에 방문하셨습니다.<br/>다른 결제수단을 이용하고자 하시는 고객님께서는 제휴접속을 종료하신 후 결제 진행하시면 됩니다. 제휴접속 종료하기'
+  },
+  EAT: {
+    name: 'EBS 통합 교재몰',
+    msg: 'EBSi, EBS를 경유하여 접속되었습니다.<br/>EBS(초등,중학)를 경유하여 접속시 EBS 꿈포인트를 사용하실 수 없습니다'
+  }
+})

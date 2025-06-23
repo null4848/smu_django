@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+/*.dialog_wrapper .ui-dialog.dialog_sm {width: auto;}
+.dialog_wrapper .ui-dialog .dialog_wrap.ui-dialog-content {background: none;}
+.dialog_wrapper .ui-dialog .dialog_wrap.ui-dialog-content.has_btn { padding: 0; }*/
+.dialog_wrapper .ui-dialog .dialog_wrap.ui-dialog-content.ebs_promo_layer { background: none; }
+.dialog_wrapper .ui-dialog .dialog_wrap.ui-dialog-content.has_btn.ebs_promo_layer { padding: 0; }
+
+.ebs_inner {text-align: center;}
+.ebs_inner a.btn_md.btn_pill.btn_primary { width: 168px;height: 50px; margin: 30px auto 15px; }
+.ebs_inner .btn_burst_close { color: #fff;text-decoration: underline; }
